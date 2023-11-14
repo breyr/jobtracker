@@ -6,19 +6,20 @@ import os
 load_dotenv()
 
 config = {
-  "apiKey": os.getenv('API_KEY'),
-  "authDomain": os.getenv('AUTH_DOMAIN'),
-  "projectId": os.getenv('PROJECT_ID'),
-  "storageBucket": os.getenv('STORAGE_BUCKET'),
-  "messagingSenderId": os.getenv('MESSAGING_SENDER_ID'),
-  "appId": os.getenv('APP_ID'),
-  "databaseURL": ""
+    "apiKey": os.getenv('API_KEY'),
+    "authDomain": os.getenv('AUTH_DOMAIN'),
+    "projectId": os.getenv('PROJECT_ID'),
+    "storageBucket": os.getenv('STORAGE_BUCKET'),
+    "messagingSenderId": os.getenv('MESSAGING_SENDER_ID'),
+    "appId": os.getenv('APP_ID'),
+    "databaseURL": ""
 }
 
 firebase = pyrebase.initialize_app(config)
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
+
 
 @app.route('/')
 def index():
@@ -30,7 +31,7 @@ def index():
 
 
 @app.route('/login', methods=['POST'])
-def login():    
+def login():
     email = request.form['email']
     password = request.form['password']
     auth = firebase.auth()
@@ -78,3 +79,7 @@ def logout():
         return redirect(url_for('index'))
     except KeyError:
         return redirect(url_for('index'))
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000, debug=True)
