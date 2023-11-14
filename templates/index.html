@@ -11,8 +11,10 @@
       src="https://kit.fontawesome.com/4137f8921b.js"
       crossorigin="anonymous"
     ></script>
-    <script type="module" src="./bundle.js"></script>
-    <link href="./static/style.css" rel="stylesheet" />
+    <link
+      href="{{url_for('static', filename='style.css') }}"
+      rel="stylesheet"
+    />
     <title>Job Tracker App</title>
   </head>
   <body>
@@ -82,13 +84,14 @@
           </div>
           <div class="modal-body">
             <!-- Login Form -->
-            <form>
+            <form method="POST" action="/login">
               <div class="form-group">
                 <label for="loginUsername">Email</label>
                 <input
                   type="email"
                   class="form-control"
                   id="loginUsername"
+                  name="email"
                   placeholder="Enter your email"
                   required
                 />
@@ -99,6 +102,7 @@
                   type="password"
                   class="form-control"
                   id="loginPassword"
+                  name="password"
                   placeholder="Enter your password"
                   required
                 />
@@ -138,13 +142,14 @@
           </div>
           <div class="modal-body">
             <!-- Signup Form -->
-            <form>
+            <form method="post" action="/register">
               <div class="form-group">
                 <label for="signupUsername">Email</label>
                 <input
                   type="email"
                   class="form-control"
                   id="signupUsername"
+                  name="email"
                   placeholder="Enter your email"
                   required
                 />
@@ -155,6 +160,7 @@
                   type="password"
                   class="form-control"
                   id="signupPassword"
+                  name="password"
                   placeholder="Enter your password"
                   required
                 />
