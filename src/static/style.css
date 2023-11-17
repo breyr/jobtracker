@@ -5,7 +5,7 @@
 */
 
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap');
 * {
   font-family: 'Source Code Pro', monospace;
 }
@@ -24,8 +24,16 @@ footer {
   text-align: center;
 }
 
-i:hover {
-  color: #ffffff4f;
+a {
+  color: #41ead4;
+}
+
+a:hover {
+  color: #31b3a2;
+}
+
+nav i:hover {
+  color: rgba(255, 255, 255, 0.497);
 }
 
 .splash-container {
@@ -70,4 +78,78 @@ i:hover {
 .modal-button:hover {
   background-color: #ff206e;
   color: #0c0f0a;
+}
+
+/* DASHBOARD STYLES */
+
+h2 {
+  color: #9370db;
+}
+
+.container {
+  min-width: 100%;
+}
+
+.status-container {
+  height: 75vh;
+  overflow-y: scroll;
+  padding: 1rem;
+}
+
+/* For Chrome, Safari, and Opera */
+.status-container::-webkit-scrollbar {
+  width: 10px;
+}
+
+.status-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.status-container::-webkit-scrollbar-thumb {
+  background: rgba(121, 121, 121, 0.5);
+}
+
+/* For Firefox */
+.status-container {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(121, 121, 121, 0.5) transparent;
+}
+
+.application {
+  width: 100%;
+  min-height: auto;
+  background-color: #e6e6fa;
+  margin-bottom: 1.5rem;
+  border-radius: 5px;
+  text-align: left;
+  padding: 1.25rem;
+}
+
+.application p {
+  padding: 0;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.application:hover {
+  background-color: #d8d8f3;
+  cursor: pointer;
+}
+
+.company {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #0c0f0a;
+}
+
+.company a {
+  float: right;
+}
+
+.company a {
+  color: #9370db;
+}
+
+.company a:hover {
+  color: #563f85;
 }

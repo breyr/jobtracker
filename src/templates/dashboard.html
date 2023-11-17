@@ -1,14 +1,65 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Application Dashboard</title>
-  </head>
-  <body>
-    Logged in!
-    <form method="post" action="/logout">
-      <button type="submit">logout</button>
-    </form>
-  </body>
-</html>
+{% extends 'base.html' %} {% block title %}Dashboard{% endblock %} {%block nav
+%}
+<ul class="navbar-nav align-items-center">
+  <li class="nav-item text-light mr-3">
+    Hello, {{ session['email'].split('@')[0] }}
+  </li>
+  <form method="post" action="/logout">
+    <button class="btn custom-button" type="submit">logout</button>
+  </form>
+</ul>
+{% endblock %} {% block content %}
+<div class="container">
+  <div class="d-flex justify-content-around text-center">
+    <div class="p-2 w-25">
+      <h2>Applied</h2>
+      <section class="status-container">
+        <!-- TODO: Make divs clickable to have them move -->
+        <div class="application">
+          <p class="company">
+            Google <a href="#"><i class="fa-solid fa-link"></i></a>
+          </p>
+          <p class="position">Software Developer Intern</p>
+          <p class="description">Bellevue, WA - $45/hr</p>
+        </div>
+      </section>
+    </div>
+    <div class="p-2 w-25">
+      <h2>Phone Interview</h2>
+      <section class="status-container">
+        <div class="application">
+          <p class="company">
+            Microhard <a href="#"><i class="fa-solid fa-link"></i></a>
+          </p>
+          <p class="position">Software Developer Intern</p>
+          <p class="description">Bellevue, WA - $45/hr</p>
+        </div>
+      </section>
+    </div>
+    <div class="p-2 w-25">
+      <h2>Interview</h2>
+      <section class="status-container">
+        <div class="application">
+          <p class="company">
+            Epic Games UwU <a href="#"><i class="fa-solid fa-link"></i></a>
+          </p>
+          <p class="position">Software Developer Intern</p>
+          <p class="description">Bellevue, WA - $45/hr</p>
+        </div>
+      </section>
+    </div>
+    <div class="p-2 w-25">
+      <h2>Offer/Decline</h2>
+      <section class="status-container">
+        <div class="application">
+          <p class="company">
+            SpaceX <a href="#"><i class="fa-solid fa-link"></i></a>
+          </p>
+          <p class="position">Software Developer Intern</p>
+          <p class="description">Bellevue, WA - $45/hr</p>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+{% endblock %}

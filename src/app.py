@@ -17,6 +17,7 @@ config = {
 
 firebase = pyrebase.initialize_app(config)
 
+
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
 
@@ -40,6 +41,7 @@ def login():
         # TODO: refresh session token, tokens are invalid after 1 hour
         user_id = user['idToken']
         session['usr'] = user_id
+        session['email'] = user['email']
         return redirect(url_for('dashboard'))
     except:
         return redirect(url_for('index'))
