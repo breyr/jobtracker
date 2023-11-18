@@ -143,6 +143,20 @@ def newapp():
         return redirect(url_for('index'))
 
 
+@app.route('/deleteapp', methods=['POST'])
+def deleteapp():
+    try:
+        usr = session['usr']
+        # delete application from xata
+        res = xata.records().delete(
+            'Applications', request.form['applicationid'])
+        if res.is_success():
+            # application deleted
+            return redirect(url_for('dashboard'))
+    except KeyError:
+        return redirect(url_for('index'))
+
+
 @app.route('/logout', methods=['POST'])
 def logout():
     try:

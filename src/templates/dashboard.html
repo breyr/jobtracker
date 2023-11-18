@@ -143,11 +143,21 @@
             <label for="description" class="form-label">Description</label>
             <textarea class="form-control" id="description" rows="3"></textarea>
           </div>
+          <button type="submit" class="btn btn-outline-dark">
+            Save changes
+          </button>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark">Save changes</button>
-        <button type="button" class="btn btn-danger">Delete</button>
+        <form method="POST" action="/deleteapp" id="deleteAppForm">
+          <input
+            type="hidden"
+            name="applicationid"
+            id="applicationid"
+            value=""
+          />
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
         <button type="button" class="btn btn-outline-danger">Close</button>
       </div>
     </div>

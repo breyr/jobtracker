@@ -32,6 +32,10 @@ $(document).ready(function () {
         $('#application-modal #posting-link').val($postingLink);
         $('#application-modal #description').val($desc);
 
+        // insert application row id into application delete form
+        $id = $(this).attr('id');
+        $('#applicationid').val($id);
+
         // show modal
         $('#application-modal').modal('show');
     });
@@ -44,11 +48,6 @@ $(document).ready(function () {
     // Handle click event for the save changes button
     $('#application-modal .btn-outline-dark').click(function () {
         // TODO: Add your save changes logic here for updating the application details
-    });
-
-    // Handle click event for the delete button
-    $('#application-modal .btn-danger').click(function () {
-        // TODO: Add your save changes logic here for deleting the application
     });
 
     // Handle click event for the add application button
