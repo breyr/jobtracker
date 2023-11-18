@@ -162,3 +162,7 @@ h2 {
 .company a:hover {
   color: #563f85;
 }
+
+.description {
+  color: rgb(156, 156, 156);
+}

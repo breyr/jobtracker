@@ -56,7 +56,7 @@ def login():
             }
         })
         if res.is_success():
-            session['usr_uid'] = res['records'][0]['id']
+            session['uid'] = res['records'][0]['id']
         else:
             # user not in db
             pass
@@ -76,12 +76,12 @@ def register():
         # TODO refresh session token, tokens are invalid after 1 hour
         user_id = user['idToken']
         session['usr'] = user_id
+        session['email'] = email
         # add user to xata
         res = xata.records().insert('Users', {'email': email})
         if res.is_success() and 'idToken' in user:
             # user created in firebase and added to xata
-            session['email'] = email
-            session['usr_uid'] = res['id']
+            session['uid'] = res['id']
             return redirect(url_for('dashboard'))
     except:
         return redirect(url_for('index'))
@@ -91,9 +91,55 @@ def register():
 def dashboard():
     try:
         usr = session['usr']
-        return render_template('dashboard.html')
+
+        # Get all applications for the user
+        res = xata.data().query('Applications', {
+            "columns": ["*"],
+            "filter": {
+                "uid": session['uid']
+            }
+        })
+
+        # ! this could be slow if there are a lot of applications, but 4 queries will be slow if there are a lot of applications in the db
+        # Filter the applications by status
+        applied = [app for app in res['records']
+                   if app['status'] == 'applied']
+        phone_interview = [
+            app for app in res['records'] if app['status'] == 'phoneinterview']
+        interview = [
+            app for app in res['records'] if app['status'] == 'interview']
+        offer_rejected = [
+            app for app in res['records'] if app['status'] == 'offered' or app['status'] == 'rejected']
+
+        if res.is_success():
+            # applications retrieved
+            return render_template('dashboard.html', applied=applied, phone_interview=phone_interview, interview=interview, offer_rejected=offer_rejected)
     except KeyError:
         # If 'usr' is not in session, then the user is not logged in, redirect to index
+        return redirect(url_for('index'))
+
+
+@app.route('/newapp', methods=['POST'])
+def newapp():
+    try:
+        # user must be logged in
+        usr = session['usr']
+
+        # add application to xata
+        record = {
+            'uid': session['uid'],
+            'company': request.form['company'],
+            'position': request.form['position'],
+            'posting_link': request.form['posting-link'],
+            'status': request.form['status'],
+            'description': request.form['description'],
+        }
+
+        res = xata.records().insert('Applications', record)
+        if res.is_success():
+            # application added
+            return redirect(url_for('dashboard'))
+    except KeyError:
         return redirect(url_for('index'))
 
 
@@ -104,7 +150,7 @@ def logout():
         # clear session
         session.pop('usr', None)
         session.pop('email', None)
-        session.pop('usr_uid', None)
+        session.pop('uid', None)
         return redirect(url_for('index'))
     except KeyError:
         return redirect(url_for('index'))

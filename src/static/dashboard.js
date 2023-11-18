@@ -60,10 +60,4 @@ $(document).ready(function () {
     $('#new-application-modal .btn-outline-danger').click(function () {
         $('#new-application-modal').modal('hide');
     });
-
-    // Handle click event for the save changes button
-    $('#new-application-modal .btn-outline-danger').click(function () {
-        // TODO: Add your save changes logic here for updating the application details
-    });
-
 });

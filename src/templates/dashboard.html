@@ -17,72 +17,84 @@
     <div class="p-2 w-25">
       <h2>Applied</h2>
       <section class="status-container">
-        <!-- TODO: Make divs clickable to have them move -->
-        <div class="application" id="fromserver1">
+        {% for application in applied %}
+        <div class="application" id="{{ application.id }}">
           <p class="company">
-            Google
-            <a href="#" target="_blank" class="posting-link"
+            {{ application.company }}
+            <a
+              href="{{application.posting_link}}"
+              target="_blank"
+              class="posting-link"
               ><i class="fa-solid fa-link"></i
             ></a>
           </p>
-          <p class="position">Software Developer Intern</p>
-          <p class="description">Bellevue, WA - $45/hr</p>
+          <p class="position">{{ application.position }}</p>
+          <p class="description">{{ application.description }}</p>
         </div>
+        {% endfor %}
       </section>
     </div>
     <div class="p-2 w-25">
       <h2>Phone Interview</h2>
       <section class="status-container">
-        <div class="application">
+        {% for application in phone_interview %}
+        <div class="application" id="{{ application.id }}">
           <p class="company">
-            Microhard
-            <a href="#" target="_blank" class="posting-link"
+            {{ application.company }}
+            <a
+              href="{{application.posting_link}}"
+              target="_blank"
+              class="posting-link"
               ><i class="fa-solid fa-link"></i
             ></a>
           </p>
-          <p class="position">Software Developer Intern</p>
-          <p class="description">Bellevue, WA - $45/hr</p>
+          <p class="position">{{ application.position }}</p>
+          <p class="description">{{ application.description }}</p>
         </div>
+        {% endfor %}
       </section>
     </div>
     <div class="p-2 w-25">
       <h2>Interview</h2>
       <section class="status-container">
-        <div class="application">
+        {% for application in interview %}
+        <div class="application" id="{{ application.id }}">
           <p class="company">
-            Epic Games UwU
-            <a href="#" target="_blank" class="posting-link"
+            {{ application.company }}
+            <a
+              href="{{application.posting_link}}"
+              target="_blank"
+              class="posting-link"
               ><i class="fa-solid fa-link"></i
             ></a>
           </p>
-          <p class="position">Software Developer Intern</p>
-          <p class="description">Bellevue, WA - $45/hr</p>
+          <p class="position">{{ application.position }}</p>
+          <p class="description">{{ application.description }}</p>
         </div>
+        {% endfor %}
       </section>
     </div>
     <div class="p-2 w-25">
       <h2>Offer/Rejected</h2>
       <section class="status-container">
-        <div class="application rejected">
+        {% for application in offer_rejected %}
+        <div
+          class="application {{ application.status }}"
+          id="{{ application.id }}"
+        >
           <p class="company">
-            SpaceX
-            <a href="#" target="_blank" class="posting-link"
+            {{ application.company }}
+            <a
+              href="{{application.posting_link}}"
+              target="_blank"
+              class="posting-link"
               ><i class="fa-solid fa-link"></i
             ></a>
           </p>
-          <p class="position">Software Developer Intern</p>
-          <p class="description">Bellevue, WA - $45/hr</p>
+          <p class="position">{{ application.position }}</p>
+          <p class="description">{{ application.description }}</p>
         </div>
-        <div class="application offered">
-          <p class="company">
-            SpaceX
-            <a href="#" target="_blank" class="posting-link"
-              ><i class="fa-solid fa-link"></i
-            ></a>
-          </p>
-          <p class="position">Software Developer Intern</p>
-          <p class="description">Bellevue, WA - $45/hr</p>
-        </div>
+        {% endfor %}
       </section>
     </div>
   </div>
@@ -123,7 +135,7 @@
               <option value="applied">Applied</option>
               <option value="phoneinterview">Phone Interview</option>
               <option value="interview">Interview</option>
-              <option value="offer">Offered</option>
+              <option value="offered">Offered</option>
               <option value="rejected">Rejected</option>
             </select>
           </div>
@@ -158,13 +170,14 @@
         </h5>
       </div>
       <div class="modal-body">
-        <form id="application-form">
+        <form id="application-form" action="/newapp" method="POST">
           <div class="mb-3">
             <label for="company" class="form-label">Company</label>
             <input
               type="text"
               class="form-control"
               id="company"
+              name="company"
               placeholder="Google, Amazon, etc."
             />
           </div>
@@ -174,6 +187,7 @@
               type="text"
               class="form-control"
               id="position"
+              name="position"
               placeholder="Software Developer Intern"
             />
           </div>
@@ -183,12 +197,13 @@
               type="text"
               class="form-control"
               id="posting-link"
+              name="posting-link"
               placeholder="Link to job posting - LinkedIn, Indeed, etc."
             />
           </div>
           <div class="mb-3">
             <label for="status" class="form-label">Status</label>
-            <select class="form-control" id="status">
+            <select class="form-control" id="status" name="status">
               <option value="applied">Applied</option>
               <option value="phoneinterview">Phone Interview</option>
               <option value="interview">Interview</option>
@@ -202,13 +217,16 @@
               class="form-control"
               id="description"
               rows="3"
+              name="description"
               placeholder="Location, rate, anything you would like to note..."
             ></textarea>
           </div>
+          <button type="submit" class="btn btn-outline-dark">
+            Save changes
+          </button>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark">Save changes</button>
         <button type="button" class="btn btn-outline-danger">Close</button>
       </div>
     </div>

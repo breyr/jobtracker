@@ -8,7 +8,7 @@
 
 ## TODOS
 
-- [ ] Add server logic for adding an application
+- [✅] Add server logic for adding an application
 - [ ] Add server logic for deleting an application
 - [ ] Add server logic for updating an application
 - [ ] Add server logic for getting all applications
