@@ -11,7 +11,7 @@
 - [✅] Add server logic for adding an application
 - [ ] Add server logic for deleting an application
 - [ ] Add server logic for updating an application
-- [ ] Add server logic for getting all applications
+- [✅] Add server logic for getting all applications
 - [ ] Add client side logic to sort applications?
 - [ ] Add client side logic to filter applications?
 - [ ] Add client side logic to search applications?
