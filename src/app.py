@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 import pyrebase
 from dotenv import load_dotenv
 import os
+from xata.client import XataClient
 
 load_dotenv()
 
@@ -17,6 +18,9 @@ config = {
 
 firebase = pyrebase.initialize_app(config)
 
+# initialize xata connection
+xata = XataClient(api_key=os.getenv('XATA_API_KEY'),
+                  db_url=os.getenv('XATA_DB_URL'))
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
@@ -42,6 +46,20 @@ def login():
         user_id = user['idToken']
         session['usr'] = user_id
         session['email'] = user['email']
+        # get user id from xata
+        # ! session['usr_uid'] is used to identify the user in xata, will be used
+        # ! to add data to applications table
+        res = xata.data().query('Users', {
+            "columns": ["id"],
+            "filter": {
+                "email": email
+            }
+        })
+        if res.is_success():
+            session['usr_uid'] = res['records'][0]['id']
+        else:
+            # user not in db
+            pass
         return redirect(url_for('dashboard'))
     except:
         return redirect(url_for('index'))
@@ -58,7 +76,13 @@ def register():
         # TODO refresh session token, tokens are invalid after 1 hour
         user_id = user['idToken']
         session['usr'] = user_id
-        return redirect(url_for('dashboard'))
+        # add user to xata
+        res = xata.records().insert('Users', {'email': email})
+        if res.is_success() and 'idToken' in user:
+            # user created in firebase and added to xata
+            session['email'] = email
+            session['usr_uid'] = res['id']
+            return redirect(url_for('dashboard'))
     except:
         return redirect(url_for('index'))
 
@@ -77,7 +101,10 @@ def dashboard():
 def logout():
     try:
         usr = session['usr']
+        # clear session
         session.pop('usr', None)
+        session.pop('email', None)
+        session.pop('usr_uid', None)
         return redirect(url_for('index'))
     except KeyError:
         return redirect(url_for('index'))
