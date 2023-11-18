@@ -67,16 +67,17 @@ nav i:hover {
 }
 
 .modal-content {
-  color: #ff206e;
+  color: #7458ab;
+  background-color: #e6e6fa;
 }
 
 .modal-button {
-  border: 1px solid #ff206e;
-  color: #ff206e;
+  border: 1px solid #7458ab;
+  color: #7458ab;
 }
 
 .modal-button:hover {
-  background-color: #ff206e;
+  background-color: #7458ab;
   color: #0c0f0a;
 }
 
@@ -134,6 +135,14 @@ h2 {
 .application:hover {
   background-color: #d8d8f3;
   cursor: pointer;
+}
+
+.offered {
+  border: 3px solid #34c167;
+}
+
+.rejected {
+  border: 3px solid #ea4141;
 }
 
 .company {

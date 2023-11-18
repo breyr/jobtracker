@@ -1,23 +1,29 @@
 {% extends 'base.html' %} {% block title %}Dashboard{% endblock %} {%block nav
 %}
-<ul class="navbar-nav align-items-center">
-  <li class="nav-item text-light mr-3">
+<ul class="navbar-nav align-items-center w-100">
+  <li class="nav-item text-light mr-auto">
     Hello, {{ session['email'].split('@')[0] }}
   </li>
+  <button class="btn btn-outline-light mr-3" id="add-application-btn">
+    + application
+  </button>
   <form method="post" action="/logout">
     <button class="btn custom-button" type="submit">logout</button>
   </form>
 </ul>
 {% endblock %} {% block content %}
-<div class="container">
+<div class="container mt-3">
   <div class="d-flex justify-content-around text-center">
     <div class="p-2 w-25">
       <h2>Applied</h2>
       <section class="status-container">
         <!-- TODO: Make divs clickable to have them move -->
-        <div class="application">
+        <div class="application" id="fromserver1">
           <p class="company">
-            Google <a href="#"><i class="fa-solid fa-link"></i></a>
+            Google
+            <a href="#" target="_blank" class="posting-link"
+              ><i class="fa-solid fa-link"></i
+            ></a>
           </p>
           <p class="position">Software Developer Intern</p>
           <p class="description">Bellevue, WA - $45/hr</p>
@@ -29,7 +35,10 @@
       <section class="status-container">
         <div class="application">
           <p class="company">
-            Microhard <a href="#"><i class="fa-solid fa-link"></i></a>
+            Microhard
+            <a href="#" target="_blank" class="posting-link"
+              ><i class="fa-solid fa-link"></i
+            ></a>
           </p>
           <p class="position">Software Developer Intern</p>
           <p class="description">Bellevue, WA - $45/hr</p>
@@ -41,7 +50,10 @@
       <section class="status-container">
         <div class="application">
           <p class="company">
-            Epic Games UwU <a href="#"><i class="fa-solid fa-link"></i></a>
+            Epic Games UwU
+            <a href="#" target="_blank" class="posting-link"
+              ><i class="fa-solid fa-link"></i
+            ></a>
           </p>
           <p class="position">Software Developer Intern</p>
           <p class="description">Bellevue, WA - $45/hr</p>
@@ -49,11 +61,24 @@
       </section>
     </div>
     <div class="p-2 w-25">
-      <h2>Offer/Decline</h2>
+      <h2>Offer/Rejected</h2>
       <section class="status-container">
-        <div class="application">
+        <div class="application rejected">
           <p class="company">
-            SpaceX <a href="#"><i class="fa-solid fa-link"></i></a>
+            SpaceX
+            <a href="#" target="_blank" class="posting-link"
+              ><i class="fa-solid fa-link"></i
+            ></a>
+          </p>
+          <p class="position">Software Developer Intern</p>
+          <p class="description">Bellevue, WA - $45/hr</p>
+        </div>
+        <div class="application offered">
+          <p class="company">
+            SpaceX
+            <a href="#" target="_blank" class="posting-link"
+              ><i class="fa-solid fa-link"></i
+            ></a>
           </p>
           <p class="position">Software Developer Intern</p>
           <p class="description">Bellevue, WA - $45/hr</p>
@@ -62,4 +87,134 @@
     </div>
   </div>
 </div>
+
+<!-- Modal for updating application -->
+<div
+  class="modal fade"
+  id="application-modal"
+  tabindex="-1"
+  aria-labelledby="application-modal-label"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="application-modal-label">
+          Application Modal Title
+        </h5>
+      </div>
+      <div class="modal-body">
+        <form id="application-form">
+          <div class="mb-3">
+            <label for="company" class="form-label">Company</label>
+            <input type="text" class="form-control" id="company" />
+          </div>
+          <div class="mb-3">
+            <label for="position" class="form-label">Position</label>
+            <input type="text" class="form-control" id="position" />
+          </div>
+          <div class="mb-3">
+            <label for="posting-link" class="form-label">Posting Link</label>
+            <input type="text" class="form-control" id="posting-link" />
+          </div>
+          <div class="mb-3">
+            <label for="status" class="form-label">Status</label>
+            <select class="form-control" id="status">
+              <option value="applied">Applied</option>
+              <option value="phoneinterview">Phone Interview</option>
+              <option value="interview">Interview</option>
+              <option value="offer">Offered</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" rows="3"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark">Save changes</button>
+        <button type="button" class="btn btn-danger">Delete</button>
+        <button type="button" class="btn btn-outline-danger">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for new application -->
+<div
+  class="modal fade"
+  id="new-application-modal"
+  tabindex="-1"
+  aria-labelledby="new-application-modal-label"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="new-application-modal-label">
+          New Application
+        </h5>
+      </div>
+      <div class="modal-body">
+        <form id="application-form">
+          <div class="mb-3">
+            <label for="company" class="form-label">Company</label>
+            <input
+              type="text"
+              class="form-control"
+              id="company"
+              placeholder="Google, Amazon, etc."
+            />
+          </div>
+          <div class="mb-3">
+            <label for="position" class="form-label">Position</label>
+            <input
+              type="text"
+              class="form-control"
+              id="position"
+              placeholder="Software Developer Intern"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="posting-link" class="form-label">Posting Link</label>
+            <input
+              type="text"
+              class="form-control"
+              id="posting-link"
+              placeholder="Link to job posting - LinkedIn, Indeed, etc."
+            />
+          </div>
+          <div class="mb-3">
+            <label for="status" class="form-label">Status</label>
+            <select class="form-control" id="status">
+              <option value="applied">Applied</option>
+              <option value="phoneinterview">Phone Interview</option>
+              <option value="interview">Interview</option>
+              <option value="offer">Offered</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea
+              class="form-control"
+              id="description"
+              rows="3"
+              placeholder="Location, rate, anything you would like to note..."
+            ></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark">Save changes</button>
+        <button type="button" class="btn btn-outline-danger">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='dashboard.js') }}"></script>
 {% endblock %}
