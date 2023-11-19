@@ -16,7 +16,7 @@
   <div class="d-flex justify-content-around text-center">
     <div class="p-2 w-25">
       <h2>Applied</h2>
-      <section class="status-container">
+      <section class="status-container" id="applied">
         {% for application in applied %}
         <div class="application" id="{{ application.id }}">
           <p class="company">
@@ -36,7 +36,7 @@
     </div>
     <div class="p-2 w-25">
       <h2>Phone Interview</h2>
-      <section class="status-container">
+      <section class="status-container" id="phoneinterview">
         {% for application in phone_interview %}
         <div class="application" id="{{ application.id }}">
           <p class="company">
@@ -56,7 +56,7 @@
     </div>
     <div class="p-2 w-25">
       <h2>Interview</h2>
-      <section class="status-container">
+      <section class="status-container" id="interview">
         {% for application in interview %}
         <div class="application" id="{{ application.id }}">
           <p class="company">
@@ -76,7 +76,7 @@
     </div>
     <div class="p-2 w-25">
       <h2>Offer/Rejected</h2>
-      <section class="status-container">
+      <section class="status-container" id="offer-or-reject">
         {% for application in offer_rejected %}
         <div
           class="application {{ application.status }}"
@@ -208,7 +208,7 @@
         </h5>
       </div>
       <div class="modal-body">
-        <form id="application-form" action="/newapp" method="POST">
+        <section id="application-form">
           <div class="mb-3">
             <label for="company" class="form-label">Company</label>
             <input
@@ -245,7 +245,7 @@
               <option value="applied">Applied</option>
               <option value="phoneinterview">Phone Interview</option>
               <option value="interview">Interview</option>
-              <option value="offer">Offered</option>
+              <option value="offered">Offered</option>
               <option value="rejected">Rejected</option>
             </select>
           </div>
@@ -259,12 +259,12 @@
               placeholder="Location, rate, anything you would like to note..."
             ></textarea>
           </div>
-          <button type="submit" class="btn btn-outline-dark" id="addappbutton">
-            Add
-          </button>
-        </form>
+        </section>
       </div>
       <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" id="addappbtn">
+          Add
+        </button>
         <button type="button" class="btn btn-outline-danger" id="closeappbtn">
           Close
         </button>

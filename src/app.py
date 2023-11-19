@@ -87,7 +87,7 @@ def register():
         return redirect(url_for('index'))
 
 
-@app.route('/dashboard')
+@app.route('/dashboard', methods=['GET'])
 def dashboard():
     try:
         usr = session['usr']
@@ -130,15 +130,18 @@ def newapp():
             'uid': session['uid'],
             'company': request.form['company'],
             'position': request.form['position'],
-            'posting_link': request.form['posting-link'],
+            'posting_link': request.form['postingLink'],
             'status': request.form['status'],
-            'description': request.form['description'],
+            'description': request.form['desc'],
         }
 
         res = xata.records().insert('Applications', record)
         if res.is_success():
             # application added
-            return redirect(url_for('dashboard'))
+            return jsonify(sucess=True, id=res['id'])
+        else:
+            # db error
+            return jsonify(success=False)
     except KeyError:
         return redirect(url_for('index'))
 
@@ -178,6 +181,7 @@ def updateapp():
         if res.is_success():
             # application updated
             return jsonify(success=True)
+
         else:
             # db error
             return jsonify(success=False)
