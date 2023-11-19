@@ -150,7 +150,7 @@ def newapp():
 def deleteapp():
     try:
         usr = session['usr']
-        print(request.form)
+
         # delete application from xata
         res = xata.records().delete(
             'Applications', request.form['id'])
@@ -174,11 +174,10 @@ def updateapp():
             'position': request.form['position'],
             'posting_link': request.form['postingLink'],
             'status': request.form['status'],
-            'description': request.form['description'],
+            'description': request.form['desc'],
         }
         res = xata.records().update(
             'Applications', request.form['id'], record)
-
         if res.is_success():
             # application updated
             return jsonify(success=True)

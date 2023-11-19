@@ -61,7 +61,9 @@ $(document).ready(function () {
             },
             success: function (result) {
                 // update application card on page
-                $('#' + $id).find('.company').text($company);
+                // get a tag for posting link
+                $postingLinkN = $('#' + $id).find('.posting-link');
+                $('#' + $id).find('.company').text($company).append($postingLinkN);
                 $('#' + $id).find('.position').text($position);
                 $('#' + $id).find('.posting-link').attr('href', $postingLink);
                 $('#' + $id).find('.description').text($desc);
