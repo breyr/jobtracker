@@ -168,16 +168,19 @@ def updateapp():
         record = {
             'company': request.form['company'],
             'position': request.form['position'],
-            'posting_link': request.form['posting-link'],
+            'posting_link': request.form['postingLink'],
             'status': request.form['status'],
             'description': request.form['description'],
         }
         res = xata.records().update(
-            'Applications', request.form['saveapplicationid'], record)
+            'Applications', request.form['id'], record)
 
         if res.is_success():
             # application updated
-            return redirect(url_for('dashboard'))
+            return jsonify(success=True)
+        else:
+            # db error
+            return jsonify(success=False)
     except KeyError:
         return redirect(url_for('index'))
 

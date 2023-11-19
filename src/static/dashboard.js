@@ -42,7 +42,7 @@ $(document).ready(function () {
     });
 
     // Handle click event for the close button
-    $('#application-modal .btn-outline-danger').click(function () {
+    $('#application-modal #closeappbtn').click(function () {
         $('#application-modal').modal('hide');
     });
 
@@ -52,12 +52,12 @@ $(document).ready(function () {
     });
 
     // Handle click event for the close button
-    $('#new-application-modal .btn-outline-danger').click(function () {
+    $('#new-application-modal #closeappbtn').click(function () {
         $('#new-application-modal').modal('hide');
     });
 
     // Handle click event for deleting an application
-    $('#application-modal .btn-danger').click(function () {
+    $('#deleteappbtn').click(function () {
         // get id of application to delete
         $id = $('#delapplicationid').val();
         // send delete request to server
@@ -68,6 +68,45 @@ $(document).ready(function () {
             success: function (result) {
                 // remove application card from page
                 $('#' + $id).remove();
+                // hide modal
+                $('#application-modal').modal('hide');
+            },
+            error: function () {
+                // TODO implement error handling
+                // create an alert on the page
+                console.log('error');
+            }
+        });
+    });
+
+    // Handle click event for saving an application
+    $('#saveappbtn').click(function () {
+        // get id of application to update
+        $id = $('#saveapplicationid').val();
+        // get updated application details
+        $company = $('#application-modal #company').val();
+        $position = $('#application-modal #position').val();
+        $postingLink = $('#application-modal #posting-link').val();
+        $status = $('#application-modal #status').find(':selected').text();
+        $desc = $('#application-modal #description').val();
+        // send update request to server
+        $.ajax({
+            url: '/updateapp',
+            type: 'POST',
+            data: {
+                id: $id,
+                company: $company,
+                position: $position,
+                postingLink: $postingLink,
+                status: $status,
+                desc: $desc
+            },
+            success: function (result) {
+                // update application card on page
+                $('#' + $id).find('.company').text($company);
+                $('#' + $id).find('.position').text($position);
+                $('#' + $id).find('.posting-link').attr('href', $postingLink);
+                $('#' + $id).find('.description').text($desc);
                 // hide modal
                 $('#application-modal').modal('hide');
             },
