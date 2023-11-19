@@ -55,4 +55,27 @@ $(document).ready(function () {
     $('#new-application-modal .btn-outline-danger').click(function () {
         $('#new-application-modal').modal('hide');
     });
+
+    // Handle click event for deleting an application
+    $('#application-modal .btn-danger').click(function () {
+        // get id of application to delete
+        $id = $('#delapplicationid').val();
+        // send delete request to server
+        $.ajax({
+            url: '/deleteapp',
+            type: 'POST',
+            data: { id: $id },
+            success: function (result) {
+                // remove application card from page
+                $('#' + $id).remove();
+                // hide modal
+                $('#application-modal').modal('hide');
+            },
+            error: function () {
+                // TODO implement error handling
+                // create an alert on the page
+                console.log('error');
+            }
+        });
+    });
 });

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 import pyrebase
 from dotenv import load_dotenv
 import os
@@ -152,7 +152,10 @@ def deleteapp():
             'Applications', request.form['delapplicationid'])
         if res.is_success():
             # application deleted
-            return redirect(url_for('dashboard'))
+            return jsonify(success=True)
+        else:
+            # db error
+            return jsonify(success=False)
     except KeyError:
         return redirect(url_for('index'))
 
