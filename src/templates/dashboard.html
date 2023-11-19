@@ -116,22 +116,37 @@
         </h5>
       </div>
       <div class="modal-body">
-        <form id="application-form">
+        <form method="POST" action="/updateapp" id="updateAppForm">
           <div class="mb-3">
             <label for="company" class="form-label">Company</label>
-            <input type="text" class="form-control" id="company" />
+            <input
+              type="text"
+              class="form-control"
+              id="company"
+              name="company"
+            />
           </div>
           <div class="mb-3">
             <label for="position" class="form-label">Position</label>
-            <input type="text" class="form-control" id="position" />
+            <input
+              type="text"
+              class="form-control"
+              id="position"
+              name="position"
+            />
           </div>
           <div class="mb-3">
             <label for="posting-link" class="form-label">Posting Link</label>
-            <input type="text" class="form-control" id="posting-link" />
+            <input
+              type="text"
+              class="form-control"
+              id="posting-link"
+              name="posting-link"
+            />
           </div>
           <div class="mb-3">
             <label for="status" class="form-label">Status</label>
-            <select class="form-control" id="status">
+            <select class="form-control" id="status" name="status">
               <option value="applied">Applied</option>
               <option value="phoneinterview">Phone Interview</option>
               <option value="interview">Interview</option>
@@ -141,10 +156,21 @@
           </div>
           <div class="mb-3">
             <label for="description" class="form-label">Description</label>
-            <textarea class="form-control" id="description" rows="3"></textarea>
+            <textarea
+              class="form-control"
+              id="description"
+              name="description"
+              rows="3"
+            ></textarea>
           </div>
+          <input
+            type="hidden"
+            name="saveapplicationid"
+            id="saveapplicationid"
+            value=""
+          />
           <button type="submit" class="btn btn-outline-dark">
-            Save changes
+            Save Changes
           </button>
         </form>
       </div>
@@ -152,8 +178,8 @@
         <form method="POST" action="/deleteapp" id="deleteAppForm">
           <input
             type="hidden"
-            name="applicationid"
-            id="applicationid"
+            name="delapplicationid"
+            id="delapplicationid"
             value=""
           />
           <button type="submit" class="btn btn-danger">Delete</button>
@@ -231,9 +257,7 @@
               placeholder="Location, rate, anything you would like to note..."
             ></textarea>
           </div>
-          <button type="submit" class="btn btn-outline-dark">
-            Save changes
-          </button>
+          <button type="submit" class="btn btn-outline-dark">Add</button>
         </form>
       </div>
       <div class="modal-footer">

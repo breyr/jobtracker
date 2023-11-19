@@ -34,7 +34,8 @@ $(document).ready(function () {
 
         // insert application row id into application delete form
         $id = $(this).attr('id');
-        $('#applicationid').val($id);
+        $('#delapplicationid').val($id);
+        $('#saveapplicationid').val($id);
 
         // show modal
         $('#application-modal').modal('show');
@@ -43,11 +44,6 @@ $(document).ready(function () {
     // Handle click event for the close button
     $('#application-modal .btn-outline-danger').click(function () {
         $('#application-modal').modal('hide');
-    });
-
-    // Handle click event for the save changes button
-    $('#application-modal .btn-outline-dark').click(function () {
-        // TODO: Add your save changes logic here for updating the application details
     });
 
     // Handle click event for the add application button

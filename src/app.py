@@ -149,9 +149,31 @@ def deleteapp():
         usr = session['usr']
         # delete application from xata
         res = xata.records().delete(
-            'Applications', request.form['applicationid'])
+            'Applications', request.form['delapplicationid'])
         if res.is_success():
             # application deleted
+            return redirect(url_for('dashboard'))
+    except KeyError:
+        return redirect(url_for('index'))
+
+
+@app.route('/updateapp', methods=['POST'])
+def updateapp():
+    try:
+        usr = session['usr']
+        # update application in xata
+        record = {
+            'company': request.form['company'],
+            'position': request.form['position'],
+            'posting_link': request.form['posting-link'],
+            'status': request.form['status'],
+            'description': request.form['description'],
+        }
+        res = xata.records().update(
+            'Applications', request.form['saveapplicationid'], record)
+
+        if res.is_success():
+            # application updated
             return redirect(url_for('dashboard'))
     except KeyError:
         return redirect(url_for('index'))
