@@ -150,6 +150,7 @@ def newapp():
 def deleteapp():
     try:
         usr = session['usr']
+        print(request.form)
         # delete application from xata
         res = xata.records().delete(
             'Applications', request.form['id'])

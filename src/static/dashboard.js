@@ -98,7 +98,7 @@ $(document).ready(function () {
             },
             success: function (result) {
                 // create new application card
-                $newApp = $('<div></div>').addClass('application').addClass($status.toLowerCase()).attr('id', $(result.id));
+                $newApp = $('<div></div>').addClass('application').addClass($status.toLowerCase()).attr('id', result.id);
                 $companyN = $('<p></p>').addClass('company').text($company);
                 $postingLink = $('<a></a>').addClass('posting-link').attr('href', $postingLink).html('<i class="fa-solid fa-link"></i>');
                 $companyN.append($postingLink);
