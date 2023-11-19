@@ -149,7 +149,7 @@ def deleteapp():
         usr = session['usr']
         # delete application from xata
         res = xata.records().delete(
-            'Applications', request.form['delapplicationid'])
+            'Applications', request.form['id'])
         if res.is_success():
             # application deleted
             return jsonify(success=True)
