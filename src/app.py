@@ -47,8 +47,8 @@ def login():
         session['usr'] = user_id
         session['email'] = user['email']
         # get user id from xata
-        # ! session['usr_uid'] is used to identify the user in xata, will be used
-        # ! to add data to applications table
+        # session['usr_uid'] is used to identify the user in xata, will be used
+        # to add data to applications table
         res = xata.data().query('Users', {
             "columns": ["id"],
             "filter": {
