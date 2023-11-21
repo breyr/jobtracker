@@ -1,4 +1,5 @@
 $(document).ready(function () {
+
     // Handle click event for the close button
     $('#application-modal #closeappbtn').click(function () {
         $('#application-modal').modal('hide');
@@ -71,9 +72,13 @@ $(document).ready(function () {
                 $('#application-modal').modal('hide');
             },
             error: function () {
-                // TODO implement error handling
-                // create an alert on the page
-                console.log('error');
+                // show error message
+                $errorMsg = 'Error saving application';
+                $error = `<div class="alert alert-danger alert-dismissible  w-50 mx-auto fade show" role="alert">
+                        ${$errorMsg} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button></div>`;
+                $('#errors').append($error);
             }
         });
     });
@@ -126,9 +131,13 @@ $(document).ready(function () {
                 $('#new-application-modal').modal('hide');
             },
             error: function () {
-                // TODO implement error handling
-                // create an alert on the page
-                console.log('error');
+                // show error message
+                $errorMsg = 'Error adding application';
+                $error = `<div class="alert alert-danger alert-dismissible  w-50 mx-auto fade show" role="alert">
+                        ${$errorMsg} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button></div>`;
+                $('#errors').append($error);
             }
         });
     });
