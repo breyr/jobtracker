@@ -12,6 +12,7 @@ import pyrebase
 from dotenv import load_dotenv
 import os
 from xata.client import XataClient
+import json
 
 load_dotenv()
 
@@ -51,7 +52,6 @@ def login():
     auth = firebase.auth()
     try:
         user = auth.sign_in_with_email_and_password(email, password)
-        # TODO: refresh session token, tokens are invalid after 1 hour
         user_id = user["idToken"]
         session["usr"] = user_id
         session["email"] = user["email"]
@@ -61,15 +61,18 @@ def login():
         res = xata.data().query(
             "Users", {"columns": ["id"], "filter": {"email": email}}
         )
-        print(res)
         if res.is_success():
             session["uid"] = res["records"][0]["id"]
             return jsonify(success=True), 200
         else:
             return jsonify(success=False), 500
     except Exception as e:
-        print(e)
-        return jsonify(success=False), 400
+        # common error codes for firebase auth
+        # INVALID_LOGIN_CREDENTIALS, TOO_MANY_ATTEMPTS_TRY_LATER
+        return (
+            jsonify(success=False, error=json.loads(e.args[1])["error"]["message"]),
+            400,
+        )
 
 
 @app.route("/register", methods=["POST"])
@@ -78,9 +81,7 @@ def register():
     password = request.form["password"]
     auth = firebase.auth()
     try:
-        # TODO check if email is already in use
         user = auth.create_user_with_email_and_password(email, password)
-        # TODO refresh session token, tokens are invalid after 1 hour
         user_id = user["idToken"]
         session["usr"] = user_id
         session["email"] = email
@@ -89,9 +90,16 @@ def register():
         if res.is_success() and "idToken" in user:
             # user created in firebase and added to xata
             session["uid"] = res["id"]
-            return redirect(url_for("dashboard"))
+            return jsonify(success=True), 200
+        else:
+            return jsonify(success=False), 500
     except Exception as e:
-        return redirect(url_for("index"))
+        # common error codes for firebase auth
+        # EMAIL_EXISTS, OPERATION_NOT_ALLOWED, TOO_MANY_ATTEMPTS_TRY_LATER
+        return (
+            jsonify(success=False, error=json.loads(e.args[1])["error"]["message"]),
+            400,
+        )
 
 
 @app.route("/dashboard", methods=["GET"])

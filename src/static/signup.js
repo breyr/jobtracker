@@ -1,13 +1,13 @@
 $(document).ready(function () {
 
-    // handle login
-    $('#loginbtn').click(function () {
+    // handle signup
+    $('#signupbtn').click(function () {
         // get user input
-        $email = $('#loginEmail').val();
-        $password = $('#loginPassword').val();
-        // send login request to server
+        $email = $('#signupEmail').val();
+        $password = $('#signupPassword').val();
+        // send signup request to server
         $.ajax({
-            url: '/login',
+            url: '/register',
             type: 'POST',
             data: {
                 email: $email,
@@ -20,8 +20,11 @@ $(document).ready(function () {
             error: function (response) {
                 $errorMsg = '';
                 switch (response.responseJSON.error) {
-                    case 'INVALID_LOGIN_CREDENTIALS':
-                        $errorMsg = 'Incorrect username or password';
+                    case 'EMAIL_EXISTS':
+                        $errorMsg = 'Email already exists';
+                        break;
+                    case 'OPERATION_NOT_ALLOWED':
+                        $errorMsg = 'Password sign-in is disabled';
                         break;
                     case 'TOO_MANY_ATTEMPTS_TRY_LATER':
                         $errorMsg = 'Too many attempts. Try again later';
@@ -31,14 +34,13 @@ $(document).ready(function () {
                 }
                 if (response.status == 400) {
                     // change border color of input fields
-                    $('#loginEmail').addClass('is-invalid');
-                    $('#loginPassword').addClass('is-invalid');
+                    $('#signupEmail').addClass('is-invalid');
                     $error = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
                         ${$errorMsg} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button></div>`;
                     // add error message to modal body
-                    $('#loginModal .modal-body').prepend($error);
+                    $('#signupModal .modal-body').prepend($error);
                 } else if (response.status == 500) {
                     // show db error message
                     $errorMsg = 'Database error';
@@ -47,7 +49,7 @@ $(document).ready(function () {
                         <span aria-hidden="true">&times;</span>
                         </button></div>`;
                     // add error message to modal body
-                    $('#loginModal .modal-body').prepend($error);
+                    $('#signupModal .modal-body').prepend($error);
                 }
             }
         });
