@@ -60,7 +60,17 @@ nav i:hover {
   color: #0c0f0a;
 }
 
-.modal-content {
+.custom-button-solid {
+  background-color: #41ead4;
+  color: #0c0f0a;
+}
+
+.custom-button-solid:hover {
+  background-color: #31b3a2;
+  color: #0c0f0a;
+}
+
+/* .modal-content {
   color: #7458ab;
   background-color: #e6e6fa;
 }
@@ -73,7 +83,7 @@ nav i:hover {
 .modal-button:hover {
   background-color: #7458ab;
   color: #0c0f0a;
-}
+} */
 
 /* DASHBOARD STYLES */
 

@@ -53,16 +53,15 @@
       </div>
       <div class="modal-body">
         <!-- Login Form -->
-        <form method="POST" action="/login">
+        <section id="loginForm">
           <div class="form-group">
             <label for="loginUsername">Email</label>
             <input
               type="email"
               class="form-control"
-              id="loginUsername"
+              id="loginEmail"
               name="email"
               placeholder="Enter your email"
-              required
             />
           </div>
           <div class="form-group">
@@ -73,13 +72,16 @@
               id="loginPassword"
               name="password"
               placeholder="Enter your password"
-              required
             />
           </div>
-          <button type="submit" class="btn modal-button btn-block">
+          <button
+            type="button"
+            class="btn custom-button-solid btn-block"
+            id="loginbtn"
+          >
             Login
           </button>
-        </form>
+        </section>
       </div>
     </div>
   </div>
@@ -117,7 +119,7 @@
             <input
               type="email"
               class="form-control"
-              id="signupUsername"
+              id="signupEmail"
               name="email"
               placeholder="Enter your email"
               required
@@ -142,5 +144,6 @@
     </div>
   </div>
 </div>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='login.js') }}"></script>
 {% endblock %}

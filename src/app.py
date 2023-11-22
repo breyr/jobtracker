@@ -1,4 +1,13 @@
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask import (
+    Flask,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    session,
+    jsonify,
+    flash,
+)
 import pyrebase
 from dotenv import load_dotenv
 import os
@@ -52,14 +61,15 @@ def login():
         res = xata.data().query(
             "Users", {"columns": ["id"], "filter": {"email": email}}
         )
+        print(res)
         if res.is_success():
             session["uid"] = res["records"][0]["id"]
+            return jsonify(success=True), 200
         else:
-            # user not in db
-            pass
-        return redirect(url_for("dashboard"))
+            return jsonify(success=False), 500
     except Exception as e:
-        return redirect(url_for("index"))
+        print(e)
+        return jsonify(success=False), 400
 
 
 @app.route("/register", methods=["POST"])
@@ -143,7 +153,7 @@ def newapp():
             return jsonify(sucess=True, id=res["id"])
         else:
             # db error
-            return jsonify(success=False)
+            return jsonify(success=False), 500
     except KeyError:
         return redirect(url_for("index"))
 
@@ -160,7 +170,7 @@ def deleteapp():
             return jsonify(success=True)
         else:
             # db error
-            return jsonify(success=False)
+            return jsonify(success=False), 500
     except KeyError:
         return redirect(url_for("index"))
 
@@ -183,7 +193,7 @@ def updateapp():
             return jsonify(success=True)
         else:
             # db error
-            return jsonify(success=False)
+            return jsonify(success=False), 500
     except KeyError:
         return redirect(url_for("index"))
 
