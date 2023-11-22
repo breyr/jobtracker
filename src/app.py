@@ -112,7 +112,8 @@ def dashboard():
             "Applications", {"columns": ["*"], "filter": {"uid": session["uid"]}}
         )
 
-        # ! this could be slow if there are a lot of applications, but 4 queries will be slow if there are a lot of applications in the db
+        # ! this could be slow if there are a lot of applications, but 4 queries will be slow if there are
+        # ! a lot of applications in the db
         # Filter the applications by status
         applied = [app for app in res["records"] if app["status"] == "applied"]
         phone_interview = [
