@@ -76,12 +76,12 @@ $(document).ready(function () {
             }),
             success: function (result) {
                 // update app
-                $cols = $(this).parent().siblings();
-                $cols.eq(1).text() = $status;
-                $cols.eq(2).text() = $company;
-                $cols.eq(3).text() = $position;
-                $cols.eq(4).text() = $desc;
-                $cols.eq(5).find('a').attr('href') = $postingLink;
+                $cols = $(this).children();
+                $cols.eq(1).text($status);
+                $cols.eq(2).text($company)
+                $cols.eq(3).text($position)
+                $cols.eq(4).text($desc)
+                $cols.eq(5).find('a').attr('href', $postingLink)
                 $('#application-modal').modal('hide');
             },
             error: function () {
@@ -156,9 +156,10 @@ $(document).ready(function () {
 }); // end of document ready
 
 // Have to do this because the application cards are dynamically created
-$(document).on('click', '#edit', function () {
+$(document).on('click', 'tbody tr', function () {
     // get application details from table row
-    $cols = $(this).parent().siblings();
+    $cols = $(this).children();
+    console.log($cols);
     $status = $cols.eq(1).text();
     $company = $cols.eq(2).text();
     $position = $cols.eq(3).text();
@@ -182,7 +183,7 @@ $(document).on('click', '#edit', function () {
     $('#application-modal #description').val($desc);
 
     // insert application row id into application delete form
-    $id = $(this).parent().attr('id');
+    $id = $(this).attr('id');
     $('#saveapplicationid').val($id);
 
     // show modal
