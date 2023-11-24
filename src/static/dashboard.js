@@ -78,12 +78,12 @@ $(document).ready(function () {
             }),
             success: function (result) {
                 // update app
-                $cols = $(this).children();
+                $cols = $('#' + $id).children();
                 $cols.eq(1).text($status);
-                $cols.eq(2).text($company)
-                $cols.eq(3).text($position)
-                $cols.eq(4).text($desc)
-                $cols.eq(5).find('a').attr('href', $postingLink)
+                $cols.eq(2).text($company);
+                $cols.eq(3).text($position);
+                $cols.eq(4).text($desc);
+                $cols.eq(5).find('a').attr('href', $postingLink);
                 $('#application-modal').modal('hide');
             },
             error: function () {
@@ -123,7 +123,6 @@ $(document).ready(function () {
                 // create new application row
                 $newApp = $('<tr></tr>').attr('id', result.id);
                 $newApp.append($('<td></td>').append($('<input>').attr('type', 'checkbox').val(result.id)));
-                $newApp.append($('<td></td>').attr('id', result.id).append($('<i></i>').addClass('fa-solid').addClass('fa-pen-to-square').attr('id', 'edit')));
                 $newApp.append($('<td></td>').text($status));
                 $newApp.append($('<td></td>').text($company));
                 $newApp.append($('<td></td>').text($position));
@@ -167,7 +166,6 @@ $(document).on('click', 'tbody tr', function (event) {
 
     // get application details from table row
     $cols = $(this).children();
-    console.log($cols);
     $status = $cols.eq(1).text();
     $company = $cols.eq(2).text();
     $position = $cols.eq(3).text();
