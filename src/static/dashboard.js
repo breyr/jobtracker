@@ -17,18 +17,30 @@ $(document).ready(function () {
 
     // Handle click event for deleting an application
     $('#deleteappbtn').click(function () {
-        // get id of application to delete
-        $id = $('#delapplicationid').val();
+
+        // get all checked application ids, need to do this for bulk delete with xata
+        $operations = [];
+        $('input[type="checkbox"]:checked').each(function () {
+            $operation = {
+                'delete': {
+                    'table': 'Applications',
+                }
+            }
+            $operation['delete']['id'] = ($(this).val());
+            $operations.push($operation);
+        });
+
         // send delete request to server
         $.ajax({
             url: '/deleteapp',
             type: 'POST',
-            data: { id: $id },
+            contentType: 'application/json',
+            data: JSON.stringify({ ops: $operations }),
             success: function (result) {
-                // remove application card from page
-                $('#' + $id).remove();
-                // hide modal
-                $('#application-modal').modal('hide');
+                // remove row from table
+                $operations.forEach(function (op) {
+                    $('#' + op['delete']['id']).remove();
+                });
             },
             error: function () {
                 // TODO implement error handling
@@ -46,29 +58,30 @@ $(document).ready(function () {
         $company = $('#application-modal #company').val();
         $position = $('#application-modal #position').val();
         $postingLink = $('#application-modal #posting-link').val();
+        // text for title case
         $status = $('#application-modal #status').find(':selected').text();
         $desc = $('#application-modal #description').val();
         // send update request to server
         $.ajax({
             url: '/updateapp',
             type: 'POST',
-            data: {
+            contentType: 'application/json',
+            data: JSON.stringify({
                 id: $id,
                 company: $company,
                 position: $position,
                 postingLink: $postingLink,
                 status: $status,
                 desc: $desc
-            },
+            }),
             success: function (result) {
-                // update application card on page
-                // get a tag for posting link
-                $postingLinkN = $('#' + $id).find('.posting-link');
-                $('#' + $id).find('.company').text($company).append($postingLinkN);
-                $('#' + $id).find('.position').text($position);
-                $('#' + $id).find('.posting-link').attr('href', $postingLink);
-                $('#' + $id).find('.description').text($desc);
-                // hide modal
+                // update app
+                $cols = $(this).parent().siblings();
+                $cols.eq(1).text() = $status;
+                $cols.eq(2).text() = $company;
+                $cols.eq(3).text() = $position;
+                $cols.eq(4).text() = $desc;
+                $cols.eq(5).find('a').attr('href') = $postingLink;
                 $('#application-modal').modal('hide');
             },
             error: function () {
@@ -89,36 +102,35 @@ $(document).ready(function () {
         $company = $('#new-application-modal #company').val();
         $position = $('#new-application-modal #position').val();
         $postingLink = $('#new-application-modal #posting-link').val();
-        $status = $('#new-application-modal #status').find(':selected').val();
-        console.log($status);
+        // text for title case
+        $status = $('#new-application-modal #status').find(':selected').text();
         $desc = $('#new-application-modal #description').val();
         // send request to server
         $.ajax({
             url: '/newapp',
             type: 'POST',
-            data: {
+            contentType: 'application/json',
+            data: JSON.stringify({
                 company: $company,
                 position: $position,
                 postingLink: $postingLink,
                 status: $status,
                 desc: $desc
-            },
+            }),
             success: function (result) {
-                // create new application card
-                $newApp = $('<div></div>').addClass('application').addClass($status.toLowerCase()).attr('id', result.id);
-                $companyN = $('<p></p>').addClass('company').text($company);
-                $postingLink = $('<a></a>').addClass('posting-link').attr('href', $postingLink).html('<i class="fa-solid fa-link"></i>');
-                $companyN.append($postingLink);
-                $position = $('<p></p>').addClass('position').text($position);
-                $description = $('<p></p>').addClass('description').text($desc);
-                $newApp.append($companyN, $position, $description);
-                // add new application card to page
-                // status must much the values for options in dashboard.html
-                // changing status to match the id of the div that contains the applications
-                if ($status == 'offered' || $status == 'rejected') {
-                    $status = 'offer-or-reject';
-                }
-                $('#' + $status.toLowerCase()).append($newApp);
+                // create new application row
+                $newApp = $('<tr></tr>').attr('id', result.id);
+                $newApp.append($('<td></td>').append($('<input>').attr('type', 'checkbox').val(result.id)));
+                $newApp.append($('<td></td>').attr('id', result.id).append($('<i></i>').addClass('fa-solid').addClass('fa-pen-to-square').attr('id', 'edit')));
+                $newApp.append($('<td></td>').text($status));
+                $newApp.append($('<td></td>').text($company));
+                $newApp.append($('<td></td>').text($position));
+                $newApp.append($('<td></td>').text($desc));
+                $newApp.append($('<td></td>').append($('<a></a>').attr('href', $postingLink).attr('target', '_blank').addClass('posting-link').append($('<i></i>').addClass('fa-solid').addClass('fa-link'))));
+
+
+                // add new application row to table
+                $('table').append($newApp);
 
                 // clear modal inputs
                 $('#new-application-modal #company').val('');
@@ -144,29 +156,21 @@ $(document).ready(function () {
 }); // end of document ready
 
 // Have to do this because the application cards are dynamically created
-$(document).on('click', '.application', function () {
-    // show modal for when user clicks on an application card
-    // update modal title
-    $company = $(this).find('.company').text();
-    $position = $(this).find('.position').text();
+$(document).on('click', '#edit', function () {
+    // get application details from table row
+    $cols = $(this).parent().siblings();
+    $status = $cols.eq(1).text();
+    $company = $cols.eq(2).text();
+    $position = $cols.eq(3).text();
+    $desc = $cols.eq(4).text();
+    $postingLink = $cols.eq(5).find('a').attr('href');
+
+    // update title of modal
     $('#application-modal .modal-title').text($company + ' - ' + $position);
-
-    // update modal body to have the application details in a form that can be edited
-    $company = $(this).find('.company').text().trim();
-    $position = $(this).find('.position').text();
-    $postingLink = $(this).find('.posting-link').attr('href');
-    $status = $(this).parent().parent().find('h2').text();
-    $oOrR = '';
-    if ($status == 'Offer/Rejected') {
-        $(this).hasClass('offer') ? $oOrR = 'Offered' : $oOrR = 'Rejected';
-    }
-    $desc = $(this).find('.description').text();
-
-    // update modal body
 
     // update the selected option in the status dropdown
     $('#application-modal #status').find('option').each(function () {
-        if ($(this).text() == $status || $(this).text() == $oOrR) {
+        if ($(this).val() == $status) {
             $(this).attr('selected', 'selected');
         }
     });
@@ -178,8 +182,7 @@ $(document).on('click', '.application', function () {
     $('#application-modal #description').val($desc);
 
     // insert application row id into application delete form
-    $id = $(this).attr('id');
-    $('#delapplicationid').val($id);
+    $id = $(this).parent().attr('id');
     $('#saveapplicationid').val($id);
 
     // show modal

@@ -112,28 +112,10 @@ def dashboard():
             "Applications", {"columns": ["*"], "filter": {"uid": session["uid"]}}
         )
 
-        # ! this could be slow if there are a lot of applications, but 4 queries will be slow if there are
-        # ! a lot of applications in the db
-        # Filter the applications by status
-        applied = [app for app in res["records"] if app["status"] == "applied"]
-        phone_interview = [
-            app for app in res["records"] if app["status"] == "phoneinterview"
-        ]
-        interview = [app for app in res["records"] if app["status"] == "interview"]
-        offer_rejected = [
-            app
-            for app in res["records"]
-            if app["status"] == "offered" or app["status"] == "rejected"
-        ]
-
         if res.is_success():
             # applications retrieved
             return render_template(
-                "dashboard.html",
-                applied=applied,
-                phone_interview=phone_interview,
-                interview=interview,
-                offer_rejected=offer_rejected,
+                "dashboard.html", applications=res["records"], email=session["email"]
             )
     except KeyError:
         # If 'usr' is not in session, then the user is not logged in, redirect to index
@@ -147,13 +129,14 @@ def newapp():
         session["usr"]
 
         # add application to xata
+        req_record = request.get_json()
         record = {
             "uid": session["uid"],
-            "company": request.form["company"],
-            "position": request.form["position"],
-            "posting_link": request.form["postingLink"],
-            "status": request.form["status"],
-            "description": request.form["desc"],
+            "company": req_record["company"],
+            "position": req_record["position"],
+            "posting_link": req_record["postingLink"],
+            "status": req_record["status"],
+            "description": req_record["desc"],
         }
 
         res = xata.records().insert("Applications", record)
@@ -171,9 +154,9 @@ def newapp():
 def deleteapp():
     try:
         session["usr"]
-
+        data = request.get_json()
         # delete application from xata
-        res = xata.records().delete("Applications", request.form["id"])
+        res = xata.records().transaction({"operations": data["ops"]})
         if res.is_success():
             # application deleted
             return jsonify(success=True)
@@ -189,14 +172,15 @@ def updateapp():
     try:
         session["usr"]
         # update application in xata
+        req_record = request.get_json()
         record = {
-            "company": request.form["company"],
-            "position": request.form["position"],
-            "posting_link": request.form["postingLink"],
-            "status": request.form["status"],
-            "description": request.form["desc"],
+            "company": req_record["company"],
+            "position": req_record["position"],
+            "posting_link": req_record["postingLink"],
+            "status": req_record["status"],
+            "description": req_record["desc"],
         }
-        res = xata.records().update("Applications", request.form["id"], record)
+        res = xata.records().update("Applications", req_record["id"], record)
         if res.is_success():
             # application updated
             return jsonify(success=True)

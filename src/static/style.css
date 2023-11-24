@@ -30,6 +30,10 @@ nav i:hover {
   color: rgba(255, 255, 255, 0.497);
 }
 
+i:hover {
+  cursor: pointer;
+}
+
 .splash-container {
   width: 100%;
   color: #ffffff;
@@ -170,3 +174,5 @@ h2 {
 .description {
   color: rgb(156, 156, 156);
 }
+
+/* Dashboard v2 */
