@@ -30,24 +30,26 @@ $(document).ready(function () {
             $operations.push($operation);
         });
 
-        // send delete request to server
-        $.ajax({
-            url: '/deleteapp',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ ops: $operations }),
-            success: function (result) {
-                // remove row from table
-                $operations.forEach(function (op) {
-                    $('#' + op['delete']['id']).remove();
-                });
-            },
-            error: function () {
-                // TODO implement error handling
-                // create an alert on the page
-                console.log('error');
-            }
-        });
+        if (confirm(`Are you sure you want to delete ${$operations.length} applications?`)) {
+            // send delete request to server
+            $.ajax({
+                url: '/deleteapp',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ ops: $operations }),
+                success: function (result) {
+                    // remove row from table
+                    $operations.forEach(function (op) {
+                        $('#' + op['delete']['id']).remove();
+                    });
+                },
+                error: function () {
+                    // TODO implement error handling
+                    // create an alert on the page
+                    console.log('error');
+                }
+            });
+        }
     });
 
     // Handle click event for updating an application
