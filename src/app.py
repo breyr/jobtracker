@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 import os
 from xata.client import XataClient
 import json
+from datetime import datetime
 
 load_dotenv()
 
@@ -34,6 +35,11 @@ xata = XataClient(api_key=os.getenv("XATA_API_KEY"), db_url=os.getenv("XATA_DB_U
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
+
+
+@app.template_filter()
+def format_date(date):
+    return datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%m/%d/%Y")
 
 
 @app.route("/")
@@ -111,7 +117,6 @@ def dashboard():
         res = xata.data().query(
             "Applications", {"columns": ["*"], "filter": {"uid": session["uid"]}}
         )
-
         if res.is_success():
             # applications retrieved
             return render_template(
@@ -138,11 +143,12 @@ def newapp():
             "status": req_record["status"],
             "description": req_record["desc"],
         }
-
         res = xata.records().insert("Applications", record)
         if res.is_success():
             # application added
-            return jsonify(sucess=True, id=res["id"])
+            return jsonify(
+                sucess=True, id=res["id"], updated_at=res["xata"]["updatedAt"]
+            )
         else:
             # db error
             return jsonify(success=False), 500
@@ -183,7 +189,7 @@ def updateapp():
         res = xata.records().update("Applications", req_record["id"], record)
         if res.is_success():
             # application updated
-            return jsonify(success=True)
+            return jsonify(success=True, updated_at=res["xata"]["updatedAt"])
         else:
             # db error
             return jsonify(success=False), 500

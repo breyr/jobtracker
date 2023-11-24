@@ -76,7 +76,7 @@ $(document).ready(function () {
                 status: $status,
                 desc: $desc
             }),
-            success: function (result) {
+            success: function (response) {
                 // update app
                 $cols = $('#' + $id).children();
                 $cols.eq(1).text($status);
@@ -84,6 +84,10 @@ $(document).ready(function () {
                 $cols.eq(3).text($position);
                 $cols.eq(4).text($desc);
                 $cols.eq(5).find('a').attr('href', $postingLink);
+                // format date
+                $date = new Date(response.updated_at);
+                $date = $date.toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' });
+                $cols.eq(6).text($date);
                 $('#application-modal').modal('hide');
             },
             error: function () {
@@ -119,16 +123,19 @@ $(document).ready(function () {
                 status: $status,
                 desc: $desc
             }),
-            success: function (result) {
+            success: function (response) {
                 // create new application row
-                $newApp = $('<tr></tr>').attr('id', result.id);
-                $newApp.append($('<td></td>').append($('<input>').attr('type', 'checkbox').val(result.id)));
+                $newApp = $('<tr></tr>').attr('id', response.id);
+                $newApp.append($('<td></td>').append($('<input>').attr('type', 'checkbox').val(response.id)));
                 $newApp.append($('<td></td>').text($status));
                 $newApp.append($('<td></td>').text($company));
                 $newApp.append($('<td></td>').text($position));
                 $newApp.append($('<td></td>').text($desc));
                 $newApp.append($('<td></td>').append($('<a></a>').attr('href', $postingLink).attr('target', '_blank').addClass('posting-link').append($('<i></i>').addClass('fa-solid').addClass('fa-link'))));
-
+                // format date
+                $date = new Date(response.updated_at);
+                $date = $date.toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' });
+                $newApp.append($('<td></td>').text($date));
 
                 // add new application row to table
                 $('table').append($newApp);
