@@ -1,7 +1,46 @@
+// this row class help with sorting
+// only need to sort by status, company, position, date, and keep rownode for easy display
+class Row {
+    constructor(rownode, status, company, position, date) {
+        this.rownode = rownode;
+        this.columns = {
+            status: status,
+            company: company,
+            position: position,
+            date: new Date(date)
+        }
+        this.selectedCol = null;
+    }
+}
+
+
 $(document).ready(function () {
 
     // get original rows for default order
+
     $originalrows = $('tbody tr');
+    $rowObjects = [];
+
+    $originalrows.each(function () {
+        // Create row object
+        $cols = $(this).find('td');
+        $status = $cols.eq(1).text();
+        $company = $cols.eq(2).text();
+        $position = $cols.eq(3).text();
+        $date = $cols.eq(6).text();
+        $row = new Row($(this), $status, $company, $position, $date);
+        $rowObjects.push($row);
+    });
+
+    // sorting clicks
+    $('th i').click(function () {
+        // update selected column
+        $updateSelectedColumn($(this).parent().attr('id'), $rowObjects);
+        // sort rows
+        $pq = $handleSort($(this), $rowObjects);
+        // update ui
+        $handleUiUpdate($pq, $originalrows);
+    });
 
     // Handle click event for the close button
     $('#application-modal #closeappbtn').click(function () {
@@ -45,12 +84,8 @@ $(document).ready(function () {
                     $operations.forEach(function (op) {
                         $('#' + op['delete']['id']).remove();
                     });
-                    // remove row from originalrows
-                    $originalrows = $originalrows.filter(function (row) {
-                        return !($operations.some(function (op) {
-                            return op['delete']['id'] == row.id;
-                        }));
-                    });
+                    // TODO remove row from row objects and origional rows
+
                 },
                 error: function () {
                     // TODO implement error handling
@@ -98,6 +133,8 @@ $(document).ready(function () {
                 $date = $date.toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' });
                 $cols.eq(6).text($date);
                 $('#application-modal').modal('hide');
+
+                // TODO update row object and row in original rows
             },
             error: function () {
                 // show error message
@@ -159,8 +196,7 @@ $(document).ready(function () {
                 // hide modal
                 $('#new-application-modal').modal('hide');
 
-                // add new row to originalrows
-                $originalrows.push($newApp[0]);
+                // TODO add new row object to row objects 
             },
             error: function () {
                 // show error message
@@ -222,34 +258,88 @@ $(document).on('click', 'tbody tr', function (event) {
 
 });
 
-function sortRows(col) {
-    $colIdx = col.parent().index();
-    $rows = $('tbody tr');
-    console.log($colIdx);
-    if (col.hasClass('fa-sort')) {
-        // do ascending sort on rows based on column index
-        $sorted = [...$rows].sort(function (a, b) {
-            $aVal = $(a).children().eq($colIdx).text();
-            $bVal = $(b).children().eq($colIdx).text();
-            return $aVal.localeCompare($bVal);
-        });
-        $('tbody').empty();
-        $('tbody').append($sorted);
-        col.removeClass('fa-sort').addClass('fa-sort-up');
-    } else if (col.hasClass('fa-sort-up')) {
-        // do descending sort on rows based on column index
-        col.removeClass('fa-sort-up').addClass('fa-sort-down');
-        $sorted = [...$rows].sort(function (a, b) {
-            $aVal = $(a).children().eq($colIdx).text();
-            $bVal = $(b).children().eq($colIdx).text();
-            return $bVal.localeCompare($aVal);
-        });
-        $('tbody').empty();
-        $('tbody').append($sorted);
+// FUNCTIONS FOR SORTING
+// r1 and r2 are Row objects, have to compare by the selectedCol
+$compareStringsAsc = function (r1, r2) {
+    $r1Val = r1.columns[r1.selectedCol];
+    $r2Val = r2.columns[r2.selectedCol];
+    if ($r1Val < $r2Val) { return -1; } else if ($r1Val > $r2Val) { return 1; } else { return 0; }
+}
+
+$compareStringsDesc = function (r1, r2) {
+    $r1Val = r1.columns[r1.selectedCol];
+    $r2Val = r2.columns[r2.selectedCol];
+    if ($r1Val < $r2Val) { return 1; } else if ($r1Val > $r2Val) { return -1; } else { return 0; }
+}
+
+$compareDatesAsc = function (r1, r2) {
+    $r1Val = r1.columns[r1.selectedCol];
+    $r2Val = r2.columns[r2.selectedCol];
+    // can just subtract because $r1Val and $r2Val are Date objects
+    console.log($r1Val - $r2Val);
+    return $r1Val - $r2Val;
+}
+
+$compareDatesDesc = function (r1, r2) {
+    $r1Val = r1.columns[r1.selectedCol];
+    $r2Val = r2.columns[r2.selectedCol];
+    // can just subtract because $r1Val and $r2Val are Date objects
+    return $r2Val - $r1Val;
+}
+
+$updateSelectedColumn = function (col, rows) {
+    rows.forEach(function (row) {
+        row.selectedCol = col;
+    });
+}
+
+$handleSort = function (iNode, rows) {
+    // based on icon in column header, sort rows
+    $pq = null;
+    if (iNode.parent().attr('id') == 'date') {
+        if (iNode.hasClass('fa-sort')) {
+            // do ascending sort on rows based on column index
+            $pq = new PriorityQueue({ initialValues: [...rows], comparator: $compareDatesAsc });
+            iNode.removeClass('fa-sort').addClass('fa-sort-up');
+        } else if (iNode.hasClass('fa-sort-up')) {
+            // do descending sort on rows based on column index
+            $pq = new PriorityQueue({ initialValues: [...rows], comparator: $compareDatesDesc });
+            iNode.removeClass('fa-sort-up').addClass('fa-sort-down');
+        } else {
+            // replace rows with default order
+            iNode.removeClass('fa-sort-down').addClass('fa-sort');
+            $('tbody').empty();
+            $('tbody').append($originalrows);
+        }
     } else {
-        // replace rows with default order
-        col.removeClass('fa-sort-down').addClass('fa-sort');
-        $('tbody').empty();
-        $('tbody').append($originalrows);
+        if (iNode.hasClass('fa-sort')) {
+            // do ascending sort on rows based on column index
+            $pq = new PriorityQueue({ initialValues: [...rows], comparator: $compareStringsAsc });
+            iNode.removeClass('fa-sort').addClass('fa-sort-up');
+        } else if (iNode.hasClass('fa-sort-up')) {
+            // do descending sort on rows based on column index
+            $pq = new PriorityQueue({ initialValues: [...rows], comparator: $compareStringsDesc });
+            iNode.removeClass('fa-sort-up').addClass('fa-sort-down');
+        } else {
+            // replace rows with default order
+            iNode.removeClass('fa-sort-down').addClass('fa-sort');
+            $('tbody').empty();
+            $('tbody').append($originalrows);
+        }
+    }
+    return $pq;
+}
+
+$handleUiUpdate = function (pq, originalrows) {
+    // update table with sorted rows
+    $('tbody').empty();
+    if (pq === null) {
+        $('tbody').append(originalrows);
+        return;
+    }
+    // append rows in order
+    while (pq.length > 0) {
+        $row = pq.dequeue();
+        $('tbody').append($row.rownode);
     }
 }
