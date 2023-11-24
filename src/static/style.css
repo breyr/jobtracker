@@ -55,7 +55,7 @@ i:hover {
 }
 
 .custom-button {
-  border: 1px solid #41ead4;
+  border: 2px solid #41ead4;
   color: #41ead4;
 }
 
@@ -74,105 +74,34 @@ i:hover {
   color: #0c0f0a;
 }
 
-/* .modal-content {
-  color: #7458ab;
-  background-color: #e6e6fa;
+#add-application-btn {
+  border: 2px solid white;
 }
-
-.modal-button {
-  border: 1px solid #7458ab;
-  color: #7458ab;
-}
-
-.modal-button:hover {
-  background-color: #7458ab;
-  color: #0c0f0a;
-} */
 
 /* DASHBOARD STYLES */
 
-h2 {
-  color: #9370db;
-}
-
-.container {
+.apps-container {
   min-width: 100%;
-}
-
-.status-container {
-  height: 75vh;
+  max-height: 90vh;
+  padding-left: 0.75rem;
   overflow-y: scroll;
-  padding: 1rem;
 }
 
 /* For Chrome, Safari, and Opera */
-.status-container::-webkit-scrollbar {
+.apps-container::-webkit-scrollbar {
   width: 10px;
 }
 
-.status-container::-webkit-scrollbar-track {
+.apps-container::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.status-container::-webkit-scrollbar-thumb {
+.apps-container::-webkit-scrollbar-thumb {
   background: rgba(121, 121, 121, 0.5);
 }
 
 /* For Firefox */
-.status-container {
+.apps-container {
   scrollbar-width: thin;
   scrollbar-color: rgba(121, 121, 121, 0.5) transparent;
 }
-
-.application {
-  width: 100%;
-  min-height: auto;
-  background-color: #e6e6fa;
-  margin-bottom: 1.5rem;
-  border-radius: 5px;
-  text-align: left;
-  padding: 1.25rem;
-}
-
-.application p {
-  padding: 0;
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-}
-
-.application:hover {
-  background-color: #d8d8f3;
-  cursor: pointer;
-}
-
-.offered {
-  border: 3px solid #34c167;
-}
-
-.rejected {
-  border: 3px solid #ea4141;
-}
-
-.company {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #0c0f0a;
-}
-
-.company a {
-  float: right;
-}
-
-.company a {
-  color: #9370db;
-}
-
-.company a:hover {
-  color: #563f85;
-}
-
-.description {
-  color: rgb(156, 156, 156);
-}
-
-/* Dashboard v2 */
