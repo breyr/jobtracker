@@ -158,7 +158,13 @@ $(document).ready(function () {
 }); // end of document ready
 
 // Have to do this because the application cards are dynamically created
-$(document).on('click', 'tbody tr', function () {
+$(document).on('click', 'tbody tr', function (event) {
+
+    // if the checkbox was clicked do nothing
+    if ($(event.target).is('input')) {
+        return;
+    }
+
     // get application details from table row
     $cols = $(this).children();
     console.log($cols);
