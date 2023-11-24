@@ -16,30 +16,35 @@ class Row {
 
 $(document).ready(function () {
 
-    // get original rows for default order
-
+    // get original rows for default ordering within rowObjects
     $originalrows = $('tbody tr');
-    $rowObjects = [];
+
+    // create hash table of row objects for easy access (update, delete, etc.)
+    $rowObjects = {};
 
     $originalrows.each(function () {
         // Create row object
+        $id = $(this).attr('id');
         $cols = $(this).find('td');
         $status = $cols.eq(1).text();
         $company = $cols.eq(2).text();
         $position = $cols.eq(3).text();
         $date = $cols.eq(6).text();
         $row = new Row($(this), $status, $company, $position, $date);
-        $rowObjects.push($row);
+        $rowObjects[$id] = $row;
     });
 
     // sorting clicks
     $('th i').click(function () {
+        // if delete column then do nothing
+        if ($(this).hasClass('fa-trash-can'))
+            return;
         // update selected column
         $updateSelectedColumn($(this).parent().attr('id'), $rowObjects);
         // sort rows
         $pq = $handleSort($(this), $rowObjects);
         // update ui
-        $handleUiUpdate($pq, $originalrows);
+        $handleUiUpdate($pq, $rowObjects);
     });
 
     // Handle click event for the close button
@@ -83,9 +88,9 @@ $(document).ready(function () {
                     // remove row from table
                     $operations.forEach(function (op) {
                         $('#' + op['delete']['id']).remove();
+                        //  remove row from row objects and origional rows
+                        delete $rowObjects[op['delete']['id']];
                     });
-                    // TODO remove row from row objects and origional rows
-
                 },
                 error: function () {
                     // TODO implement error handling
@@ -134,7 +139,10 @@ $(document).ready(function () {
                 $cols.eq(6).text($date);
                 $('#application-modal').modal('hide');
 
-                // TODO update row object and row in original rows
+                // create new row object, do this here to get the updated row node after updating columns above
+                $row = new Row($("#" + $id), $status, $company, $position, $date);
+                // update row object and row in original rows
+                $rowObjects[$id] = $row;
             },
             error: function () {
                 // show error message
@@ -196,7 +204,10 @@ $(document).ready(function () {
                 // hide modal
                 $('#new-application-modal').modal('hide');
 
-                // TODO add new row object to row objects 
+                // create new row object
+                $row = new Row($newApp, $status, $company, $position, $date);
+                // add to rowObjects
+                $rowObjects[response.id] = $row;
             },
             error: function () {
                 // show error message
@@ -249,13 +260,6 @@ $(document).on('click', 'tbody tr', function (event) {
 
     // show modal
     $('#application-modal').modal('show');
-
-    // functions for sorting
-    $('#status-sort').click(function () { sortRows($(this)); });
-    $('#company-sort').click(function () { sortRows($(this)); });
-    $('#position-sort').click(function () { sortRows($(this)); });
-    $('#date-sort').click(function () { sortRows($(this)); });
-
 });
 
 // FUNCTIONS FOR SORTING
@@ -263,6 +267,7 @@ $(document).on('click', 'tbody tr', function (event) {
 $compareStringsAsc = function (r1, r2) {
     $r1Val = r1.columns[r1.selectedCol];
     $r2Val = r2.columns[r2.selectedCol];
+    console.log($r1Val, $r2Val);
     if ($r1Val < $r2Val) { return -1; } else if ($r1Val > $r2Val) { return 1; } else { return 0; }
 }
 
@@ -276,7 +281,6 @@ $compareDatesAsc = function (r1, r2) {
     $r1Val = r1.columns[r1.selectedCol];
     $r2Val = r2.columns[r2.selectedCol];
     // can just subtract because $r1Val and $r2Val are Date objects
-    console.log($r1Val - $r2Val);
     return $r1Val - $r2Val;
 }
 
@@ -287,54 +291,66 @@ $compareDatesDesc = function (r1, r2) {
     return $r2Val - $r1Val;
 }
 
-$updateSelectedColumn = function (col, rows) {
-    rows.forEach(function (row) {
-        row.selectedCol = col;
-    });
+$updateSelectedColumn = function (col, rowObjects) {
+    // update selected column for all row objects
+    for (const [key, value] of Object.entries(rowObjects)) {
+        value.selectedCol = col;
+    }
 }
 
-$handleSort = function (iNode, rows) {
+$appendInOriginalOrder = function (rowObjects) {
+    for (const [key, value] of Object.entries(rowObjects)) {
+        $('tbody').append(value.rownode);
+    }
+}
+
+$handleSort = function (iNode, rowObjects) {
+    // create a list of row objecst from rowObjects
+    $rows = [];
+    for (const [key, value] of Object.entries(rowObjects)) {
+        $rows.push(value);
+    }
     // based on icon in column header, sort rows
     $pq = null;
     if (iNode.parent().attr('id') == 'date') {
         if (iNode.hasClass('fa-sort')) {
             // do ascending sort on rows based on column index
-            $pq = new PriorityQueue({ initialValues: [...rows], comparator: $compareDatesAsc });
+            $pq = new PriorityQueue({ initialValues: [...$rows], comparator: $compareDatesAsc });
             iNode.removeClass('fa-sort').addClass('fa-sort-up');
         } else if (iNode.hasClass('fa-sort-up')) {
             // do descending sort on rows based on column index
-            $pq = new PriorityQueue({ initialValues: [...rows], comparator: $compareDatesDesc });
+            $pq = new PriorityQueue({ initialValues: [...$rows], comparator: $compareDatesDesc });
             iNode.removeClass('fa-sort-up').addClass('fa-sort-down');
         } else {
             // replace rows with default order
             iNode.removeClass('fa-sort-down').addClass('fa-sort');
             $('tbody').empty();
-            $('tbody').append($originalrows);
+            $appendInOriginalOrder(rowObjects);
         }
     } else {
         if (iNode.hasClass('fa-sort')) {
             // do ascending sort on rows based on column index
-            $pq = new PriorityQueue({ initialValues: [...rows], comparator: $compareStringsAsc });
+            $pq = new PriorityQueue({ initialValues: [...$rows], comparator: $compareStringsAsc });
             iNode.removeClass('fa-sort').addClass('fa-sort-up');
         } else if (iNode.hasClass('fa-sort-up')) {
             // do descending sort on rows based on column index
-            $pq = new PriorityQueue({ initialValues: [...rows], comparator: $compareStringsDesc });
+            $pq = new PriorityQueue({ initialValues: [...$rows], comparator: $compareStringsDesc });
             iNode.removeClass('fa-sort-up').addClass('fa-sort-down');
         } else {
             // replace rows with default order
             iNode.removeClass('fa-sort-down').addClass('fa-sort');
             $('tbody').empty();
-            $('tbody').append($originalrows);
+            $appendInOriginalOrder(rowObjects);
         }
     }
     return $pq;
 }
 
-$handleUiUpdate = function (pq, originalrows) {
+$handleUiUpdate = function (pq, rowObjects) {
     // update table with sorted rows
     $('tbody').empty();
     if (pq === null) {
-        $('tbody').append(originalrows);
+        $appendInOriginalOrder(rowObjects);
         return;
     }
     // append rows in order
