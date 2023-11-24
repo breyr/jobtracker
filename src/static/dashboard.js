@@ -161,7 +161,7 @@ $(document).ready(function () {
 $(document).on('click', 'tbody tr', function (event) {
 
     // if the checkbox was clicked do nothing
-    if ($(event.target).is('input')) {
+    if ($(event.target).is('input') || $(event.target).is('i')) {
         return;
     }
 
