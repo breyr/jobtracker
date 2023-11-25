@@ -15,5 +15,5 @@
 - [✅] Implement error handling in Ajax requests
 - [✅] Add client side logic to sort applications?
 - [ ] Add client side logic to filter applications?
-- [ ] be able to sort by more than one column
+- [✅] be able to sort by more than one column
 - [✅] Add client side logic for mass deletion?
