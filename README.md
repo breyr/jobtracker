@@ -5,6 +5,12 @@
 - Python
 - [Flask](https://flask.palletsprojects.com/en/3.0.x/)
 - [pyrebase](https://github.com/nhorvath/Pyrebase4)
+- [Firebase](https://firebase.google.com/)
+- [Bootstrap](https://getbootstrap.com/)
+- [jQuery](https://jquery.com/)
+- [js-priority-queue](https://www.jsdelivr.com/package/npm/js-priority-queue)
+- [Font Awesome](https://fontawesome.com/)
+- [Xata](https://xata.io/)
 
 ## TODOS
 
