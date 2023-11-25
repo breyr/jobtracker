@@ -14,6 +14,7 @@
 - [✅] Add server logic for getting all applications
 - [✅] Implement error handling in Ajax requests
 - [✅] Add client side logic to sort applications?
-- [ ] Add client side logic to filter applications?
+- [✅] Add client side logic to filter applications?
 - [✅] be able to sort by more than one column
 - [✅] Add client side logic for mass deletion?
+- [ ] Optimize so that sorting on occurs on rows that are visible based on search

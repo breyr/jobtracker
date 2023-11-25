@@ -2,6 +2,14 @@
 %}
 <ul class="navbar-nav align-items-center w-100">
   <li class="nav-item text-light mr-auto">Hello, {{ email.split('@')[0] }}</li>
+  <div class="input-group w-25 mr-3">
+    <input
+      type="text"
+      class="form-control"
+      id="searchbar"
+      placeholder="Search by company"
+    />
+  </div>
   <button class="btn btn-outline-light mr-3" id="add-application-btn">
     + application
   </button>

@@ -38,6 +38,25 @@ $(document).ready(function () {
         $rowObjects[$id] = $row;
     });
 
+    // add event listener for search bar
+    $('#searchbar').on('keyup', function () {
+        $search = $(this).val().toLowerCase();
+
+        $('tbody tr').each(function () {
+            $cols = $(this).children();
+            $status = $cols.eq(1).text().toLowerCase();
+            $company = $cols.eq(2).text().toLowerCase();
+            $position = $cols.eq(3).text().toLowerCase();
+            $desc = $cols.eq(4).text().toLowerCase();
+            $postingLink = $cols.eq(5).find('a').attr('href').toLowerCase();
+            if ($company.includes($search)) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    });
+
     // sorting clicks
     $('th i').click(function () {
         // if delete column then do nothing

@@ -109,3 +109,9 @@ i:hover {
 table tbody tr:hover {
   cursor: pointer;
 }
+
+#searchbar {
+  background-color: #0c0f0a;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+}
