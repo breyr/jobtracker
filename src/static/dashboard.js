@@ -77,7 +77,7 @@ $(document).ready(function () {
             $operations.push($operation);
         });
 
-        if (confirm(`Are you sure you want to delete ${$operations.length} applications?`)) {
+        if (confirm(`Are you sure you want to delete ${$operations.length} applications?`) && $operations.length > 0) {
             // send delete request to server
             $.ajax({
                 url: '/deleteapp',
