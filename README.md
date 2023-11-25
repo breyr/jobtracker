@@ -24,3 +24,4 @@
 - [✅] be able to sort by more than one column
 - [✅] Add client side logic for mass deletion?
 - [ ] Optimize so that sorting on occurs on rows that are visible based on search
+- [ ] rows with same dates get sorted sometimes?
