@@ -7,7 +7,7 @@ class Row {
             status: status,
             company: company,
             position: position,
-            date: new Date(date)
+            date: date
         }
         this.selectedCol = null;
     }
@@ -312,36 +312,19 @@ $handleSort = function (iNode, rowObjects) {
     }
     // based on icon in column header, sort rows
     $pq = null;
-    if (iNode.parent().attr('id') == 'date') {
-        if (iNode.hasClass('fa-sort')) {
-            // do ascending sort on rows based on column index
-            $pq = new PriorityQueue({ initialValues: [...$rows], comparator: $compareDatesAsc });
-            iNode.removeClass('fa-sort').addClass('fa-sort-up');
-        } else if (iNode.hasClass('fa-sort-up')) {
-            // do descending sort on rows based on column index
-            $pq = new PriorityQueue({ initialValues: [...$rows], comparator: $compareDatesDesc });
-            iNode.removeClass('fa-sort-up').addClass('fa-sort-down');
-        } else {
-            // replace rows with default order
-            iNode.removeClass('fa-sort-down').addClass('fa-sort');
-            $('tbody').empty();
-            $appendInOriginalOrder(rowObjects);
-        }
+    if (iNode.hasClass('fa-sort')) {
+        // do ascending sort on rows based on column index
+        $pq = new PriorityQueue({ initialValues: [...$rows], comparator: $compareStringsAsc });
+        iNode.removeClass('fa-sort').addClass('fa-sort-up');
+    } else if (iNode.hasClass('fa-sort-up')) {
+        // do descending sort on rows based on column index
+        $pq = new PriorityQueue({ initialValues: [...$rows], comparator: $compareStringsDesc });
+        iNode.removeClass('fa-sort-up').addClass('fa-sort-down');
     } else {
-        if (iNode.hasClass('fa-sort')) {
-            // do ascending sort on rows based on column index
-            $pq = new PriorityQueue({ initialValues: [...$rows], comparator: $compareStringsAsc });
-            iNode.removeClass('fa-sort').addClass('fa-sort-up');
-        } else if (iNode.hasClass('fa-sort-up')) {
-            // do descending sort on rows based on column index
-            $pq = new PriorityQueue({ initialValues: [...$rows], comparator: $compareStringsDesc });
-            iNode.removeClass('fa-sort-up').addClass('fa-sort-down');
-        } else {
-            // replace rows with default order
-            iNode.removeClass('fa-sort-down').addClass('fa-sort');
-            $('tbody').empty();
-            $appendInOriginalOrder(rowObjects);
-        }
+        // replace rows with default order
+        iNode.removeClass('fa-sort-down').addClass('fa-sort');
+        $('tbody').empty();
+        $appendInOriginalOrder(rowObjects);
     }
     return $pq;
 }
