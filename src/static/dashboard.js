@@ -22,6 +22,10 @@ $(document).ready(function () {
     // create hash table of row objects for easy access (update, delete, etc.)
     $rowObjects = {};
 
+    // create object of current sort, list of rowObjects's keys
+    // this is used for multiple column sorting
+    $currentSortOrder = new Set();
+
     $originalrows.each(function () {
         // Create row object
         $id = $(this).attr('id');
@@ -39,12 +43,36 @@ $(document).ready(function () {
         // if delete column then do nothing
         if ($(this).hasClass('fa-trash-can'))
             return;
-        // update selected column
-        $updateSelectedColumn($(this).parent().attr('id'), $rowObjects);
+
         // sort rows
-        $pq = $handleSort($(this), $rowObjects);
+
+        // get the icon node to update the sort order
+        if ($(this).hasClass('fa-sort')) {
+            // ascending sort for column
+            // update icon
+            $(this).removeClass('fa-sort').addClass('fa-sort-up');
+            // add to set
+            $currentSortOrder.add($(this).parent().attr('id') + " asc");
+        } else if ($(this).hasClass('fa-sort-up')) {
+            // descending sort for column
+            // update icon
+            $(this).removeClass('fa-sort-up').addClass('fa-sort-down');
+            // add to set remove ascending sort for column
+            $currentSortOrder.delete($(this).parent().attr('id') + " asc");
+            $currentSortOrder.add($(this).parent().attr('id') + " desc");
+        } else {
+            // remove sort for column
+            // update icon
+            $(this).removeClass('fa-sort-down').addClass('fa-sort');
+            // remove from set
+            $currentSortOrder.delete($(this).parent().attr('id') + " desc");
+        }
+
+        // sort rows
+        $rows = $handleSort($rowObjects, $currentSortOrder);
+
         // update ui
-        $handleUiUpdate($pq, $rowObjects);
+        $handleUiUpdate($rows, $rowObjects);
     });
 
     // Handle click event for the close button
@@ -267,7 +295,6 @@ $(document).on('click', 'tbody tr', function (event) {
 $compareStringsAsc = function (r1, r2) {
     $r1Val = r1.columns[r1.selectedCol];
     $r2Val = r2.columns[r2.selectedCol];
-    console.log($r1Val, $r2Val);
     if ($r1Val < $r2Val) { return -1; } else if ($r1Val > $r2Val) { return 1; } else { return 0; }
 }
 
@@ -277,34 +304,19 @@ $compareStringsDesc = function (r1, r2) {
     if ($r1Val < $r2Val) { return 1; } else if ($r1Val > $r2Val) { return -1; } else { return 0; }
 }
 
-$compareDatesAsc = function (r1, r2) {
-    $r1Val = r1.columns[r1.selectedCol];
-    $r2Val = r2.columns[r2.selectedCol];
-    // can just subtract because $r1Val and $r2Val are Date objects
-    return $r1Val - $r2Val;
-}
-
-$compareDatesDesc = function (r1, r2) {
-    $r1Val = r1.columns[r1.selectedCol];
-    $r2Val = r2.columns[r2.selectedCol];
-    // can just subtract because $r1Val and $r2Val are Date objects
-    return $r2Val - $r1Val;
-}
-
-$updateSelectedColumn = function (col, rowObjects) {
-    // update selected column for all row objects
-    for (const [key, value] of Object.entries(rowObjects)) {
-        value.selectedCol = col;
-    }
-}
-
 $appendInOriginalOrder = function (rowObjects) {
     for (const [key, value] of Object.entries(rowObjects)) {
         $('tbody').append(value.rownode);
     }
 }
 
-$handleSort = function (iNode, rowObjects) {
+$updateSelectedCol = function (col, rows) {
+    for ($i = 0; $i < rows.length; $i++) {
+        rows[$i].selectedCol = col;
+    }
+}
+
+$handleSort = function (rowObjects, currentSortOrder) {
     // create a list of row objecst from rowObjects
     $rows = [];
     for (const [key, value] of Object.entries(rowObjects)) {
@@ -312,33 +324,35 @@ $handleSort = function (iNode, rowObjects) {
     }
     // based on icon in column header, sort rows
     $pq = null;
-    if (iNode.hasClass('fa-sort')) {
-        // do ascending sort on rows based on column index
-        $pq = new PriorityQueue({ initialValues: [...$rows], comparator: $compareStringsAsc });
-        iNode.removeClass('fa-sort').addClass('fa-sort-up');
-    } else if (iNode.hasClass('fa-sort-up')) {
-        // do descending sort on rows based on column index
-        $pq = new PriorityQueue({ initialValues: [...$rows], comparator: $compareStringsDesc });
-        iNode.removeClass('fa-sort-up').addClass('fa-sort-down');
-    } else {
-        // replace rows with default order
-        iNode.removeClass('fa-sort-down').addClass('fa-sort');
-        $('tbody').empty();
-        $appendInOriginalOrder(rowObjects);
-    }
-    return $pq;
+    // at most the length of currentSortOrder is 4
+    for (const sort of currentSortOrder) {
+        $col = sort.split(' ')[0];
+        $order = sort.split(' ')[1];
+        // pass in rows not rowObjects because we need to update the selectedCol for each row and the order will change
+        $updateSelectedCol($col, $rows); // ! this is another loop
+        if ($order == 'asc') {
+            $pq = new PriorityQueue({ initialValues: [...$rows], comparator: $compareStringsAsc });
+        } else {
+            $pq = new PriorityQueue({ initialValues: [...$rows], comparator: $compareStringsDesc });
+        }
+        // reset rows to push new order
+        $rows = [];
+        while ($pq.length > 0) { // ! this is another loop
+            $rows.push($pq.dequeue());
+        }
+    };
+    return $rows;
 }
 
-$handleUiUpdate = function (pq, rowObjects) {
+$handleUiUpdate = function (rows, rowObjects) {
     // update table with sorted rows
     $('tbody').empty();
-    if (pq === null) {
+    if (rows.length == 0) {
         $appendInOriginalOrder(rowObjects);
-        return;
-    }
-    // append rows in order
-    while (pq.length > 0) {
-        $row = pq.dequeue();
-        $('tbody').append($row.rownode);
+    } else {
+        // append rows in order
+        for (const row of rows) {
+            $('tbody').append(row.rownode);
+        }
     }
 }
