@@ -5,7 +5,7 @@
 - [Application Tracker](#application-tracker)
   - [Table of Contents](#table-of-contents)
   - [Technologies Used](#technologies-used)
-  - [Installation](#installation)
+  - [Setup](#setup)
   - [TODOS (Internal)](#todos-internal)
 
 ## Technologies Used
@@ -20,7 +20,7 @@
 - [Font Awesome](https://fontawesome.com/)
 - [Xata](https://xata.io/)
 
-## Installation
+## Setup
 
 1. Clone the repository: `git clone https://github.com/breyr/jobtracker.git`
 2. Navigate to the repository directory: `cd jobtracker`
