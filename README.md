@@ -1,5 +1,13 @@
 # Application Tracker
 
+## Table of Contents
+
+- [Application Tracker](#application-tracker)
+  - [Table of Contents](#table-of-contents)
+  - [Technologies Used](#technologies-used)
+  - [Installation](#installation)
+  - [TODOS (Internal)](#todos-internal)
+
 ## Technologies Used
 
 - Python
@@ -12,7 +20,16 @@
 - [Font Awesome](https://fontawesome.com/)
 - [Xata](https://xata.io/)
 
-## TODOS
+## Installation
+
+1. Clone the repository: `git clone https://github.com/breyr/jobtracker.git`
+2. Navigate to the repository directory: `cd jobtracker`
+3. Create a virtual environment: `python -m venv venv`
+4. Activate the virtual environment: `source venv/bin/activate`
+5. Install the dependencies: `pip install -r requirements.txt`
+6. Run the application: `python app.py`
+
+## TODOS (Internal)
 
 - [✅] Add server logic for adding an application
 - [✅] Add server logic for deleting an application
