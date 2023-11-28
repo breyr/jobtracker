@@ -83,7 +83,6 @@ i:hover {
 .apps-container {
   min-width: 100%;
   max-height: 90vh;
-  padding-left: 0.75rem;
   overflow-y: scroll;
 }
 
