@@ -1,10 +1,21 @@
 $(document).ready(function () {
-
     // handle signup
     $('#signupbtn').click(function () {
         // get user input
         $email = $('#signupEmail').val();
         $password = $('#signupPassword').val();
+        if ($password.length < 6) {
+            // show error message
+            $errorMsg = 'Password must be at least 6 characters';
+            $error = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                ${$errorMsg} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button></div>`;
+            // add error message to modal body
+            $('#signupModal .modal-body').prepend($error);
+            // change border color of password input field
+            $('#signupPassword').addClass('is-invalid');
+            return;
+        }
         // send signup request to server
         $.ajax({
             url: '/register',
@@ -34,6 +45,7 @@ $(document).ready(function () {
                 }
                 if (response.status == 400) {
                     // change border color of input fields
+                    console.log($errorMsg);
                     $('#signupEmail').addClass('is-invalid');
                     $error = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
                         ${$errorMsg} <button type="button" class="close" data-dismiss="alert" aria-label="Close">
