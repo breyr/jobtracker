@@ -22,8 +22,7 @@ $(document).ready(function () {
     // create hash table of row objects for easy access (update, delete, etc.)
     $rowObjects = {};
 
-    // create object of current sort, list of rowObjects's keys
-    // this is used for multiple column sorting
+    // strings of the form 'col asc' or 'col desc'
     $currentSortOrder = new Set();
 
     $originalrows.each(function () {
@@ -349,11 +348,9 @@ $handleSort = function (rowObjects, currentSortOrder) {
         $order = sort.split(' ')[1];
         // pass in rows not rowObjects because we need to update the selectedCol for each row and the order will change
         $updateSelectedCol($col, $rows); // ! this is another loop
-        if ($order == 'asc') {
-            $pq = new PriorityQueue({ initialValues: [...$rows], comparator: $compareStringsAsc });
-        } else {
-            $pq = new PriorityQueue({ initialValues: [...$rows], comparator: $compareStringsDesc });
-        }
+        $pq = (($order == 'asc')
+            ? new PriorityQueue({ initialValues: [...$rows], comparator: $compareStringsAsc })
+            : new PriorityQueue({ initialValues: [...$rows], comparator: $compareStringsDesc }));
         // reset rows to push new order
         $rows = [];
         while ($pq.length > 0) { // ! this is another loop
