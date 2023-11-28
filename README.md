@@ -27,7 +27,7 @@
 3. Create a virtual environment: `python -m venv venv`
 4. Activate the virtual environment: `source venv/bin/activate`
 5. Install the dependencies: `pip install -r requirements.txt`
-6. Run the application: `python app.py`
+6. Run the application: `flask run --debug`
 
 ## TODOS (Internal)
 
