@@ -4,7 +4,7 @@ Application Tracker is a web application that allows users to track their job ap
 
 ## Demo
 
-[Heroku Link](https://flask-jobtracker-1b9ca09101ca.herokuapp.com/)
+[View Here](https://jobtracker.breyr.dev/)
 
 ## Table of Contents
 
