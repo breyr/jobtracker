@@ -1,12 +1,13 @@
 # Application Tracker
 
+Application Tracker is a web application that allows users to track their job applications. Users can add applications, view applications, and update applications. The application uses Firebase for authentication and Xata for database storage.
+
 ## Table of Contents
 
 - [Application Tracker](#application-tracker)
   - [Table of Contents](#table-of-contents)
   - [Technologies Used](#technologies-used)
   - [Setup](#setup)
-  - [TODOS (Internal)](#todos-internal)
 
 ## Technologies Used
 
@@ -24,21 +25,11 @@
 
 1. Clone the repository: `git clone https://github.com/breyr/jobtracker.git`
 2. Navigate to the repository directory: `cd jobtracker`
-3. Create a virtual environment: `python -m venv venv`
-4. Activate the virtual environment: `source venv/bin/activate`
-5. Install the dependencies: `pip install -r requirements.txt`
-6. Run the application: `flask run --debug`
-
-## TODOS (Internal)
-
-- [✅] Add server logic for adding an application
-- [✅] Add server logic for deleting an application
-- [✅] Add server logic for updating an application
-- [✅] Add server logic for getting all applications
-- [✅] Implement error handling in Ajax requests
-- [✅] Add client side logic to sort applications?
-- [✅] Add client side logic to filter applications?
-- [✅] be able to sort by more than one column
-- [✅] Add client side logic for mass deletion?
-- [ ] Optimize so that sorting on occurs on rows that are visible based on search
-- [ ] rows with same dates get sorted sometimes?
+3. Rename `.env.example` to `.env`
+4. Create a Firebase project and add a web app to it, setup email/password authentication, and add config to `.env` file
+5. Create a Xata database and add config to `.env` file
+6. Generate a random string for the `SECRET_KEY` variable in the `.env` file
+7. Create a virtual environment: `python -m venv venv`
+8. Activate the virtual environment: `source venv/bin/activate`
+9. Install the dependencies: `pip install -r requirements.txt`
+10. Run the application: `flask run --debug`
